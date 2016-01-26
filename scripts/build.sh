@@ -14,7 +14,14 @@ echo "Build the codebase"
 drush make $_config_profile_makefile_path .
 
 # Link the profile to the codebase
-[ "$config_build_symlink_to_profile" = true ] && ln -nfs $config_profile_path $config_build_path/profiles/$config_profile_name
+if [ "$config_build_symlink_to_profile" = true ]
+  then
+  ln -nfs $config_profile_path $config_build_path/profiles/$config_profile_name
+else
+  rm -rf $config_build_path/profiles/$config_profile_name
+  cp -r $config_profile_path/ $config_build_path/profiles/$config_profile_name
+  rm -rf $config_build_path/profiles/$config_profile_name/.git*
+fi
 
 # Link files directory
 [[ $config_build_files ]] && ln -nfs $config_build_files $config_build_path/sites/default/files
