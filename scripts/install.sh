@@ -26,8 +26,6 @@ echo "Installation of "$config_profile_name" on top of "$config_install_base_pro
 
 drush --root=$config_build_path si $config_install_base_profile --db-url=$config_install_db_url $force_yes
 
-enable_profile $config_profile_name
-
 if [[ -e $config_install_db_dump ]]
 	then
 	echo "Re-installing "$config_profile_name" on top of DB dump."
