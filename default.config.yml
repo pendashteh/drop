@@ -27,3 +27,5 @@ install:
 	db_dump: $root/db/dump.sql
 	features_revert_all: true
 	print_uli: false
+	# If specified will be executed in $config_profile_path
+	post_script: $root/post-install.sh

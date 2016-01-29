@@ -6,7 +6,6 @@ set -e
 
 [[ $1 = "-y" ]] && force_yes="-y"
 
-
 # Three cases:
 # 1. We install a fresh 'profile':
 #	si profile
@@ -51,4 +50,16 @@ fi
 if [ "$config_install_print_uli" = "true" ]
 	then
 	drush --root=$config_build_path uli --browser=0
+fi
+
+if [ -e "$config_install_post_script" ]
+	then
+	cd $config_profile_path
+	. $config_install_post_script
+fi
+
+if [ -e "$config_install_post_script" ]
+	then
+	cd $config_profile_path
+	. $config_install_post_script
 fi
