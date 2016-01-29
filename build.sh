@@ -1,7 +1,8 @@
 #!/bin/bash
 # Usage: ./build.sh [--purge]
 set -e
-. $(dirname "$0")/_inc.sh
+
+. $(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/scripts/_inc.sh;
 
 [[ $1 = "--purge" ]] && echo "Destroying the previous build (if exists)" && chmod -R u+w $config_build_path && rm -rf $config_build_path
 

@@ -2,7 +2,8 @@
 # Usage: ./install.sh [-y]
 set -e
 
-. $(dirname "$0")/_inc.sh
+cd $(cd $(dirname ${BASH_SOURCE[0]}) && pwd)
+. ./scripts/_inc.sh;
 
 [[ $1 = "-y" ]] && force_yes="-y"
 
@@ -54,12 +55,5 @@ fi
 
 if [ -e "$config_install_post_script" ]
 	then
-	cd $config_profile_path
-	. $config_install_post_script
-fi
-
-if [ -e "$config_install_post_script" ]
-	then
-	cd $config_profile_path
-	. $config_install_post_script
+	_exec_script $config_install_post_script;
 fi
