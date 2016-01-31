@@ -12,9 +12,11 @@ _get_abs_path() {
 }
 
 script_root=$(dirname ${BASH_SOURCE[0]});
-config_profile_name=""
+[ "$config_path" = "--" ] && config_path="./config.yml"
+
 
 # Set default configs and variables
+config_profile_name="" # Mandatory
 root=$(pwd)
 config_build_path=$root/_build
 config_profile_path=$root/profile
@@ -24,10 +26,10 @@ config_install_features_revert_all=false
 config_install_print_uli=false
 config_build_symlink_to_profile=true
 
-[ ! -e "$root/config.yml" ] && echo "Please create config.yml file first. @see example.config.yml" && exit 1
+[ ! -e "$config_path" ] && echo "Config file could not be found at $config_path. To create one please @see example.config.yml" && exit 1
 
 # Read local config variables
-. $script_root/parse_yaml.sh $root/config.yml "config_"
+. $script_root/parse_yaml.sh $config_path "config_"
 
 # Finalize config variables
 _config_profile_makefile_path=$config_profile_makefile
@@ -47,21 +49,24 @@ config_build_path=$(_get_abs_path $config_build_path)
 _config_profile_makefile_path=$(_get_abs_path $_config_profile_makefile_path)
 config_install_post_script=$(_get_abs_path $config_install_post_script)
 
+_config_review() {
+	echo "Configuration summary:"
+	echo "----------------------"
+	echo "Profile name:" $config_profile_name
+	echo "Profile path:" $config_profile_path
+	echo "Makefile path:" $_config_profile_makefile_path
+	echo "Build path:" $config_build_path
+	echo "Files directory path:" $config_build_files
+	echo "Database dump:" $config_install_db_dump
+	echo "Revert all features:" $config_install_reatures_revert_all
+	echo "Create a symbolic link to the profile in the repo:" $([ "$config_build_symlink_to_profile" = true ] &&  echo "Yes" || echo "No")
+	echo "Post-install script:" $([ "$config_install_post_script" ] &&  echo $config_install_post_script || echo "N/A")
+	echo "----------------------"
+}
 
-echo "Configuration summary:"
-echo "----------------------"
-echo "Profile name:" $config_profile_name
-echo "Profile path:" $config_profile_path
-echo "Makefile path:" $_config_profile_makefile_path
-echo "Build path:" $config_build_path
-echo "Files directory path:" $config_build_files
-echo "Database dump:" $config_install_db_dump
-echo "Revert all features:" $config_install_reatures_revert_all
-echo "Create a symbolic link to the profile in the repo:" $([ "$config_build_symlink_to_profile" = true ] &&  echo "Yes" || echo "No")
-echo "Post-install script:" $([ "$config_install_post_script" ] &&  echo $config_install_post_script || echo "N/A")
-echo "----------------------"
-
-if [ ! $(read -p "Are you sure? [y/n] ") = "y" ]
-	then
-	exit 1
-fi
+_config_confirm() {
+	if [ ! $(read -p "Are you sure? [y/n] ") = "y" ]
+		then
+		exit 1
+	fi
+}

@@ -1,0 +1,31 @@
+#!/bin/bash
+set -e
+
+# Usage:
+# 	$ drop config.yml build
+#	$ drop test.yml install -y
+#
+
+config_path=$1
+script_path=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd);
+
+task=$2
+[ ! "$task" ] && echo "No task provided." && exit 1
+
+. $script_path/scripts/_inc.sh;
+
+task_script_path=$script_path/$task.sh
+
+if [ ! -e "$task_script_path" ]
+	then
+	echo "Task script was not found at $task_script_path"
+	exit 1
+fi
+
+_config_review
+# _config_confirm
+
+. $task_script_path "${@:3}"
+
+
+
