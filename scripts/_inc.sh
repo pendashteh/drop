@@ -11,7 +11,6 @@ _get_abs_path() {
 	echo $(cd $(dirname $1) && pwd)"/"$(basename $1)
 }
 
-script_root=$(dirname ${BASH_SOURCE[0]});
 [ "$config_path" = "--" ] && config_path="./config.yml"
 
 
@@ -29,7 +28,7 @@ config_build_symlink_to_profile=true
 [ ! -e "$config_path" ] && echo "Config file could not be found at $config_path. To create one please @see example.config.yml" && exit 1
 
 # Read local config variables
-. $script_root/parse_yaml.sh $config_path "config_"
+. $script_root/scripts/parse_yaml.sh $config_path "config_"
 
 # Finalize config variables
 _config_profile_makefile_path=$config_profile_makefile

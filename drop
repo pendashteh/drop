@@ -6,15 +6,21 @@ set -e
 #	$ drop test.yml install -y
 #
 
+# Helper functions to get the abolute path for the command
+# Copyright http://stackoverflow.com/a/7400673/257479
+myreadlink() { [ ! -h "$1" ] && echo "$1" || (local link="$(expr "$(command ls -ld -- "$1")" : '.*-> \(.*\)$')"; cd $(dirname $1); myreadlink "$link" | sed "s|^\([^/].*\)\$|$(dirname $1)/\1|"); }
+whereis() { echo $1 | sed "s|^\([^/].*/.*\)|$(pwd)/\1|;s|^\([^/]*\)$|$(which -- $1)|;s|^$|$1|"; } 
+whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} | sed "s|^\([^/].*\)\$|$(dirname ${SCRIPT_PATH})/\1|"; } 
+
 config_path=$1
-script_path=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd);
+script_root=$(dirname $(whereis_realpath "$0"))
 
 task=$2
 [ ! "$task" ] && echo "No task provided." && exit 1
 
-. $script_path/scripts/_inc.sh;
+. $script_root/scripts/_inc.sh;
 
-task_script_path=$script_path/$task.sh
+task_script_path=$script_root/$task.sh
 
 if [ ! -e "$task_script_path" ]
 	then

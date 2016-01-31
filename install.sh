@@ -33,7 +33,7 @@ if [[ -e $config_install_db_dump ]]
 	drush --root=$config_build_path sql-cli < $config_install_db_dump
 
 	echo "Rebuilding registry..."
-	php $root/scripts/rr.php --root=$config_build_path 1>/dev/null
+	php $script_root/scripts/rr.php --root=$config_build_path 1>/dev/null
 fi
 
 enable_profile $config_profile_name
