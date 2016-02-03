@@ -14,6 +14,13 @@ set -e
 # 4. We just import 'db dump'
 #	si minimal; sqlc; rr;
 
+_check_database_connection() {
+	mysql_command=$(drush --root=$config_build_path sql-connect --db-url=$config_install_db_url)
+	error="$($mysql_command -e ';')"
+}
+
+_check_database_connection
+
 enable_profile() {
 	drush --root=$config_build_path vset --exact -y install_profile $1
 	drush --root=$config_build_path en $1 $force_yes
