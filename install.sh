@@ -2,8 +2,6 @@
 # Usage: ./install.sh [-y]
 set -e
 
-. $(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/scripts/_inc.sh;
-
 [[ $1 = "-y" ]] && force_yes="-y"
 
 # Three cases:
