@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+[ "$DEBUG" = "true" ] && debug_mode=true
+
 main () {
 
 	# Set default configs and variables
@@ -42,6 +44,13 @@ main () {
 	config_build_path=$(_get_abs_path $config_build_path)
 	_config_profile_makefile_path=$(_get_abs_path $_config_profile_makefile_path)
 	config_install_post_script=$(_get_abs_path $config_install_post_script)
+}
+
+# put this before any command at it prints it to the screen before running it
+debug() {
+	command="$@"
+	[ "$debug_mode" ] && echo "--> $command"
+	$command
 }
 
 _exec_script() {
