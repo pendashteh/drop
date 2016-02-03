@@ -1,53 +1,57 @@
 #!/bin/bash
 set -e
+
+main () {
+
+	# Set default configs and variables
+	config_profile_name="" # Mandatory
+	root=$(pwd)
+	config_build_path=$root/_build
+	config_profile_path=$root/profile
+	config_profile_makefile="stub.make"
+	config_install_db_dump=false
+	config_install_features_revert_all=false
+	config_install_print_uli=false
+	config_build_symlink_to_profile=true
+
+	[ "$task" = "init" ] && return
+
+	[ "$config_path" = "--" ] && config_path="./config.yml"
+
+
+
+	[ ! -e "$config_path" ] && echo "Config file could not be found at $config_path. To create one please @see example.config.yml" && exit 1
+
+	# Read local config variables
+	. $script_root/scripts/parse_yaml.sh $config_path "config_"
+
+	# Finalize config variables
+	_config_profile_makefile_path=$config_profile_makefile
+	[[ ! $_config_profile_makefile_path =~ \/ ]] && _config_profile_makefile_path=$config_profile_path"/"$_config_profile_makefile_path
+
+	# Validate config variables:
+	[[ ! $config_profile_name ]] && echo "Profile name is missing." && exit 1
+	[[ ! -e $_config_profile_makefile_path ]] && echo "Makefile not found at "$_config_profile_makefile_path && exit 1
+	[ "$config_install_db_dump" = "true" ] && [[ ! -e $config_install_db_dump ]] && echo "Database dump not found at "$config_install_db_dump && exit 1
+	[[ ! -e $config_profile_path"/"$config_profile_name".info" ]] && echo "Profile not found at "$config_profile_path && exit 1
+	[[ $config_build_files ]] && [[ ! -d $config_build_files ]] && echo "Could not locate specified files directory at"$config_build_files && exit 1
+	[ "$config_install_post_script" ] && [[ ! -s $config_install_post_script ]] && echo "Could not locate post-install script at "$config_install_post_script && exit 1
+
+
+	config_profile_path=$(_get_abs_path $config_profile_path)
+	config_build_path=$(_get_abs_path $config_build_path)
+	_config_profile_makefile_path=$(_get_abs_path $_config_profile_makefile_path)
+	config_install_post_script=$(_get_abs_path $config_install_post_script)
+}
+
 _exec_script() {
 	path=$(_get_abs_path $1)
-	echo "About to execute "$path
 	cd $(dirname $path)
-	pwd
 	. $(basename $path)
 }
 _get_abs_path() {
 	echo $(cd $(dirname $1) && pwd)"/"$(basename $1)
 }
-
-[ "$config_path" = "--" ] && config_path="./config.yml"
-
-
-# Set default configs and variables
-config_profile_name="" # Mandatory
-root=$(pwd)
-config_build_path=$root/_build
-config_profile_path=$root/profile
-config_profile_makefile="stub.make"
-config_install_db_dump=false
-config_install_features_revert_all=false
-config_install_print_uli=false
-config_build_symlink_to_profile=true
-
-[ ! -e "$config_path" ] && echo "Config file could not be found at $config_path. To create one please @see example.config.yml" && exit 1
-
-# Read local config variables
-. $script_root/scripts/parse_yaml.sh $config_path "config_"
-
-# Finalize config variables
-_config_profile_makefile_path=$config_profile_makefile
-[[ ! $_config_profile_makefile_path =~ \/ ]] && _config_profile_makefile_path=$config_profile_path"/"$_config_profile_makefile_path
-
-# Validate config variables:
-[[ ! $config_profile_name ]] && echo "Profile name is missing." && exit 1
-[[ ! -e $_config_profile_makefile_path ]] && echo "Makefile not found at "$_config_profile_makefile_path && exit 1
-[ "$config_install_db_dump" = "true" ] && [[ ! -e $config_install_db_dump ]] && echo "Database dump not found at "$config_install_db_dump && exit 1
-[[ ! -e $config_profile_path"/"$config_profile_name".info" ]] && echo "Profile not found at "$config_profile_path && exit 1
-[[ $config_build_files ]] && [[ ! -d $config_build_files ]] && echo "Could not locate specified files directory at"$config_build_files && exit 1
-[[ $config_install_post_script ]] && [[ ! -e $config_install_post_script ]] && echo "Could not locate post-install script at "$config_install_post_script && exit 1
-
-
-config_profile_path=$(_get_abs_path $config_profile_path)
-config_build_path=$(_get_abs_path $config_build_path)
-_config_profile_makefile_path=$(_get_abs_path $_config_profile_makefile_path)
-config_install_post_script=$(_get_abs_path $config_install_post_script)
-
 _config_review() {
 	echo "Configuration summary:"
 	echo "----------------------"
@@ -69,3 +73,5 @@ _config_confirm() {
 		exit 1
 	fi
 }
+
+main
