@@ -5,9 +5,15 @@
 
 main () {
 
+	[ "$config_path" = "--" ] && config_path="./config.yml"
+	root=$(_get_dir_path $config_path)
+	config_path=$(_get_abs_path $config_path)
+
 	# Set default configs and variables
 	config_profile_name="" # Mandatory
-	root=$(pwd)
+
+	cd $root
+
 	config_build_path=$root/_build
 	config_profile_path=$root/profile
 	config_profile_makefile="stub.make"
@@ -17,10 +23,6 @@ main () {
 	config_build_symlink_to_profile=true
 
 	[ "$task" = "init" ] && return
-
-	[ "$config_path" = "--" ] && config_path="./config.yml"
-
-
 
 	[ ! -e "$config_path" ] && echo "Config file could not be found at $config_path. To create one please @see example.config.yml" && exit 1
 
@@ -61,6 +63,9 @@ _exec_script() {
 _get_abs_path() {
 	[ ! "$1" ] && echo "" && exit
 	echo $(cd $(dirname $1) && pwd)"/"$(basename $1)
+}
+_get_dir_path() {
+	echo $(dirname $(_get_abs_path $1))
 }
 _config_review() {
 	echo "Configuration summary:"
