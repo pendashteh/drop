@@ -28,9 +28,6 @@ if [ ! -e "$task_script_path" ]
 	exit 1
 fi
 
-_config_review
-# _config_confirm
-
 . $task_script_path "${@:3}"
 
 
