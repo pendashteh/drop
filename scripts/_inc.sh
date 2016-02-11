@@ -70,6 +70,7 @@ _config_review() {
 	echo "Makefile path:" $_config_profile_makefile_path
 	echo "Build path:" $config_build_path
 	echo "Files directory path:" $config_build_files
+	echo "Database URL:" $config_install_db_url
 	echo "Database dump:" $config_install_db_dump
 	echo "Revert all features:" $config_install_reatures_revert_all
 	echo "Create a symbolic link to the profile in the repo:" $([ "$config_build_symlink_to_profile" = true ] &&  echo "Yes" || echo "No")
