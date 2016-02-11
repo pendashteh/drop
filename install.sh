@@ -72,8 +72,8 @@ enable_profile() {
 _generate_settings_php() {
 	local __db_url=$1
 
-	drush --root=$config_build_path dl settingsphp $force_yes
-	drush --root=$config_build_path cc drush $force_yes
+	drush --root=$config_build_path dl settingsphp -y
+	drush --root=$config_build_path cc drush -y
 	drush --root=$config_build_path settingsphp-generate --db-url=$__db_url $force_yes
 }
 
