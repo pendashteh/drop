@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+# set -e
 
 [ "$DEBUG" = "true" ] && debug_mode=true
 
@@ -59,6 +59,7 @@ _exec_script() {
 	. $(basename $path)
 }
 _get_abs_path() {
+	[ ! "$1" ] && echo "" && exit
 	echo $(cd $(dirname $1) && pwd)"/"$(basename $1)
 }
 _config_review() {
@@ -72,7 +73,7 @@ _config_review() {
 	echo "Database dump:" $config_install_db_dump
 	echo "Revert all features:" $config_install_reatures_revert_all
 	echo "Create a symbolic link to the profile in the repo:" $([ "$config_build_symlink_to_profile" = true ] &&  echo "Yes" || echo "No")
-	echo "Post-install script:" $([ "$config_install_post_script" ] &&  echo $config_install_post_script || echo "N/A")
+	echo "Post-install script:" $([ -s "$config_install_post_script" ] &&  echo $config_install_post_script || echo "N/A")
 	echo "----------------------"
 }
 
