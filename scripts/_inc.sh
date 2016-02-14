@@ -43,7 +43,6 @@ main () {
 
 
 	config_profile_path=$(_get_abs_path $config_profile_path)
-	config_build_path=$(_get_abs_path $config_build_path)
 	_config_profile_makefile_path=$(_get_abs_path $_config_profile_makefile_path)
 	config_install_post_script=$(_get_abs_path $config_install_post_script)
 }
@@ -60,8 +59,10 @@ _exec_script() {
 	cd $(dirname $path)
 	. $(basename $path)
 }
+
+# should only be used for files which are supposed to exists
 _get_abs_path() {
-	[ ! "$1" ] && echo "" && exit
+	[ ! -e "$1" ] && echo "" && exit
 	echo $(cd $(dirname $1) && pwd)"/"$(basename $1)
 }
 _get_dir_path() {
