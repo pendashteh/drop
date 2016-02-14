@@ -48,14 +48,14 @@ main() {
 		drush --root=$config_build_path fra $force_yes
 	fi
 
-	if [ "$config_install_print_uli" = "true" ]
-		then
-		drush --root=$config_build_path uli --browser=0
-	fi
-
 	if [ -s "$config_install_post_script" ]
 		then
 		_exec_script $config_install_post_script;
+	fi
+
+	if [ "$config_install_print_uli" = "true" ]
+		then
+		drush --root=$config_build_path uli --browser=0
 	fi
 
 	echo "Finished successfully."
