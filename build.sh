@@ -25,4 +25,6 @@ fi
 # Link files directory
 [[ $config_build_files ]] && ln -nfs $config_build_files $config_build_path/sites/default/files
 
+
+echo "Build finished successfully."
 exit 0

@@ -27,11 +27,12 @@ main() {
 		enable_profile $config_profile_name
 
 	else
-
 		if [ ! "$config_install_base_profile" ] || [ "$config_install_base_profile" = "$config_profile_name" ]
 			then
+			echo "Installing $config_profile_name profile"
 			_install_profile $config_profile_name
 		else
+			echo "Installing $config_profile_name on top of $config_install_base_profile"
 			_install_profile $config_install_base_profile
 			enable_profile $config_profile_name
 		fi
@@ -56,6 +57,9 @@ main() {
 		then
 		_exec_script $config_install_post_script;
 	fi
+
+	echo "Finished successfully."
+	exit 0
 }
 
 _check_database_connection() {
