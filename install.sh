@@ -16,6 +16,8 @@ set -e
 
 main() {
 
+	_validate_profile
+
 	_check_database_connection
 
 	_generate_settings_php $config_install_db_url

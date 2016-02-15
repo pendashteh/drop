@@ -13,6 +13,8 @@ profile:
 	makefile: stub.make
 
 build:
+	# this path will be used as docroot using symlink [if specified profile_makefile will be ignored]
+	source: /path/to/source/code
 	# path to build directory
 	path: /path/to/docroot
 	# If set, a symlink to sites/default/files will be created

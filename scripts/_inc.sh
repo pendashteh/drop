@@ -29,22 +29,38 @@ main () {
 	# Read local config variables
 	. $script_root/scripts/parse_yaml.sh $config_path "config_"
 
-	# Finalize config variables
-	_config_profile_makefile_path=$config_profile_makefile
-	[[ ! $_config_profile_makefile_path =~ \/ ]] && _config_profile_makefile_path=$config_profile_path"/"$_config_profile_makefile_path
-
 	# Validate config variables:
-	[[ ! $config_profile_name ]] && echo "Profile name is missing." && exit 1
-	[[ ! -e $_config_profile_makefile_path ]] && echo "Makefile not found at "$_config_profile_makefile_path && exit 1
 	[ "$config_install_db_dump" = "true" ] && [[ ! -e $config_install_db_dump ]] && echo "Database dump not found at "$config_install_db_dump && exit 1
-	[[ ! -e $config_profile_path"/"$config_profile_name".info" ]] && echo "Profile not found at "$config_profile_path && exit 1
 	[[ $config_build_files ]] && [[ ! -d $config_build_files ]] && echo "Could not locate specified files directory at"$config_build_files && exit 1
 	[ "$config_install_post_script" ] && [[ ! -s $config_install_post_script ]] && echo "Could not locate post-install script at "$config_install_post_script && exit 1
 
-
 	config_profile_path=$(_get_abs_path $config_profile_path)
 	_config_profile_makefile_path=$(_get_abs_path $_config_profile_makefile_path)
+	config_build_source=$(_get_abs_path $config_build_source)
 	config_install_post_script=$(_get_abs_path $config_install_post_script)
+}
+
+_validate_profile() {
+	# Finalize config variables
+	_config_profile_makefile_path=$config_profile_makefile
+	[[ ! $_config_profile_makefile_path =~ \/ ]] && _config_profile_makefile_path=$config_profile_path"/"$_config_profile_makefile_path
+	if [ ! "$config_profile_name" ]
+		then
+		echo "Profile name is missing."
+		exit 1
+	fi
+	if [ ! -e "$config_profile_path/$config_profile_name.info" ]
+		then
+		echo "Profile not found at "$config_profile_path
+		exit 1
+	fi
+}
+_validate_makefile() {
+	if [ ! -e "$_config_profile_makefile_path" ]
+		then
+		echo "Makefile not found at "$_config_profile_makefile_path
+		exit 1
+	fi
 }
 
 # put this before any command at it prints it to the screen before running it
