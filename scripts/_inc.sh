@@ -44,11 +44,6 @@ _validate_profile() {
 	# Finalize config variables
 	_config_profile_makefile_path=$config_profile_makefile
 	[[ ! $_config_profile_makefile_path =~ \/ ]] && _config_profile_makefile_path=$config_profile_path"/"$_config_profile_makefile_path
-	if [ ! "$config_profile_name" ]
-		then
-		echo "Profile name is missing."
-		exit 1
-	fi
 	if [ ! -e "$config_profile_path/$config_profile_name.info" ]
 		then
 		echo "Profile not found at "$config_profile_path

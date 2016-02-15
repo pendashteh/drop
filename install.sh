@@ -16,18 +16,22 @@ set -e
 
 main() {
 
-	_validate_profile
-
+	if [ "$config_profile_name" ]
+		then
+		_validate_profile
+	fi
 	_check_database_connection
 
 	_generate_settings_php $config_install_db_url
 
 	if [[ -e $config_install_db_dump ]]
 		then
-		echo "Re-installing "$config_profile_name" on top of DB dump."
 		_import_db $config_install_db_dump
-		enable_profile $config_profile_name
-
+		if [ "$config_profile_name" ]
+			then
+			echo "Re-installing "$config_profile_name" on top of DB dump."
+			enable_profile $config_profile_name
+		fi
 	else
 		if [ ! "$config_install_base_profile" ] || [ "$config_install_base_profile" = "$config_profile_name" ]
 			then
@@ -77,6 +81,22 @@ enable_profile() {
 
 _generate_settings_php() {
 	local __db_url=$1
+
+	if [ -e "$config_build_path/sites/default/settings.php" ]
+		then
+		echo "Settings.php already exists. Do you want me to override it? [y/n] "
+		[ "$force_yes" = "-y" ] && prompt="y" || read prompt
+		if [ ! "y" = "$prompt" ]
+			then
+			echo "Installation cancled."
+			exit
+		fi
+		settingsphp_original=$config_build_path/sites/default/settings.php
+		settingsphp_backup=$config_build_path/sites/default/original.settings.php
+		chmod -R u+w $config_build_path/sites/default
+		mv $settingsphp_original $settingsphp_backup
+		echo "[Warning] settings.php has been overriden and a backup is kept at $settingsphp_backup"
+	fi
 
 	drush --root=$config_build_path dl settingsphp -y
 	drush --root=$config_build_path cc drush -y
