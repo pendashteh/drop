@@ -41,7 +41,8 @@ _build_codebase() {
 	if [ -d "$config_build_source" ]
 		then
 		echo "Using the source at $config_build_source"
-		_purge_build_path
+		_prepare_build_path
+		rm -rf $config_build_path
 		debug ln -nFs $config_build_source $config_build_path
 	elif [ "$_config_profile_makefile_path" ]
 		then
