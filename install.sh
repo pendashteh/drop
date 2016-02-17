@@ -82,25 +82,25 @@ enable_profile() {
 _generate_settings_php() {
 	local __db_url=$1
 
-	if [ -e "$config_build_path/sites/default/settings.php" ]
+	sites_default_path=$config_build_path/sites/default
+	if [ -e "$sites_default_path/settings.php" ]
 		then
-		echo "Settings.php already exists. Do you want me to override it? [y/n] "
-		[ "$force_yes" = "-y" ] && prompt="y" || read prompt
-		if [ ! "y" = "$prompt" ]
-			then
-			echo "Installation cancled."
-			exit
-		fi
 		settingsphp_original=$config_build_path/sites/default/settings.php
 		settingsphp_backup=$config_build_path/sites/default/original.settings.php
-		chmod -R u+w $config_build_path/sites/default
-		mv $settingsphp_original $settingsphp_backup
-		echo "[Warning] settings.php has been overriden and a backup is kept at $settingsphp_backup"
+		chmod -R u+w $sites_default_path
+		mv $sites_default_path/settings.php $sites_default_path/original.settings.php
 	fi
-
 	drush --root=$config_build_path dl settingsphp -y
 	drush --root=$config_build_path cc drush -y
 	drush --root=$config_build_path settingsphp-generate --db-url=$__db_url $force_yes
+	if [ -e "$sites_default_path/original.settings.php" ]
+		then
+		mv $sites_default_path/settings.php $sites_default_path/settings.db.php
+		mv $sites_default_path/original.settings.php $sites_default_path/settings.php
+		echo 'require_once dirname(__FILE__) . "/settings.db.php";' >> $sites_default_path/settings.php
+		echo "[Warning] settings.php is appended by settings.db.php to add database credentials"
+	fi
+
 }
 
 _install_profile() {
