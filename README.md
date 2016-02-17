@@ -8,3 +8,7 @@
 ```
 
 
+TODO
+- get database as a prefix when installing
+
+
