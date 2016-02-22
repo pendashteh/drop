@@ -105,7 +105,7 @@ _generate_settings_php() {
 
 _install_profile() {
 	local __profile=$1
-	drush --root=$config_build_path si $force_yes
+	drush --root=$config_build_path si $__profile $force_yes
 }
 
 _import_db() {
