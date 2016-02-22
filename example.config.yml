@@ -11,6 +11,8 @@ profile:
 	path: /path/to/profile/file
 	# could be either file name within profile or an abosulte path
 	makefile: stub.make
+	# deployment method. could be copy, symlink
+	method: copy
 
 build:
 	# this path will be used as docroot using symlink [if specified profile_makefile will be ignored]

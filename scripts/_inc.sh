@@ -20,7 +20,7 @@ main () {
 	config_install_db_dump=false
 	config_install_features_revert_all=false
 	config_install_print_uli=false
-	config_build_symlink_to_profile=true
+	config_build_symlink_to_profile=false
 
 	[ "$task" = "init" ] && return
 
@@ -38,6 +38,9 @@ main () {
 	_config_profile_makefile_path=$(_get_abs_path $_config_profile_makefile_path)
 	config_build_source=$(_get_abs_path $config_build_source)
 	config_install_post_script=$(_get_abs_path $config_install_post_script)
+
+
+	drop_docroot=$config_build_path
 }
 
 _validate_profile() {
