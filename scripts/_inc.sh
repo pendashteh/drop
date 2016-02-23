@@ -14,7 +14,7 @@ main () {
 
 	cd $root
 
-	config_build_path=$root/_build
+	config_drupal_docroot=$root/_build
 	config_profile_path=$root/profile
 	config_profile_makefile="stub.make"
 	config_install_db_dump=false
@@ -35,18 +35,16 @@ main () {
 	[ "$config_install_post_script" ] && [[ ! -s $config_install_post_script ]] && echo "Could not locate post-install script at "$config_install_post_script && exit 1
 
 	config_profile_path=$(_get_abs_path $config_profile_path)
-	_config_profile_makefile_path=$(_get_abs_path $_config_profile_makefile_path)
+	config_makefile_path=$(_get_abs_path $config_makefile_path)
 	config_build_source=$(_get_abs_path $config_build_source)
 	config_install_post_script=$(_get_abs_path $config_install_post_script)
 
 
-	drop_docroot=$config_build_path
+	drop_docroot=$config_drupal_docroot
 }
 
 _validate_profile() {
 	# Finalize config variables
-	_config_profile_makefile_path=$config_profile_makefile
-	[[ ! $_config_profile_makefile_path =~ \/ ]] && _config_profile_makefile_path=$config_profile_path"/"$_config_profile_makefile_path
 	if [ ! -e "$config_profile_path/$config_profile_name.info" ]
 		then
 		echo "Profile not found at "$config_profile_path
@@ -54,9 +52,9 @@ _validate_profile() {
 	fi
 }
 _validate_makefile() {
-	if [ ! -e "$_config_profile_makefile_path" ]
+	if [ ! -e "$config_makefile_path" ]
 		then
-		echo "Makefile not found at "$_config_profile_makefile_path
+		echo "Makefile not found at "$config_makefile_path
 		exit 1
 	fi
 }
@@ -87,8 +85,8 @@ _config_review() {
 	echo "----------------------"
 	echo "Profile name:" $config_profile_name
 	echo "Profile path:" $config_profile_path
-	echo "Makefile path:" $_config_profile_makefile_path
-	echo "Build path:" $config_build_path
+	echo "Makefile path:" $config_makefile_path
+	echo "Build path:" $drop_docroot
 	echo "Files directory path:" $config_build_files
 	echo "Database URL:" $config_install_db_url
 	echo "Database dump:" $config_install_db_dump

@@ -5,20 +5,26 @@
 # - $root: points to the directory containing this config file.
 #
 
+drupal:
+	url: http://localhost/
+	docroot: _build
+
 profile:
 	name: profile_name
 	# path to the directory containing {profile_name}.info
 	path: /path/to/profile/file
-	# could be either file name within profile or an abosulte path
-	makefile: stub.make
-	# deployment method. could be copy, symlink
-	method: copy
+
+makefile:
+	# path to makefile to be used by drush.
+	path: stub.make
+
+deploy:
+	docroot: makefile
+	profile: symlink
 
 build:
 	# this path will be used as docroot using symlink [if specified profile_makefile will be ignored]
 	source: /path/to/source/code
-	# path to build directory
-	path: /path/to/docroot
 	# If set, a symlink to sites/default/files will be created
 	files: /path/to/public-files
 	# If set true, will create a symblink to the repo (for live dev)
