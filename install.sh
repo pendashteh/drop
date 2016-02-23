@@ -81,25 +81,46 @@ enable_profile() {
 }
 
 _generate_settings_php() {
+	if [ ! "$config_install_settingsphp_generate" = "true" ]
+		then
+		exit
+	fi
+
 	local __db_url=$1
 
+	_default_settingsphp_name="settings.php"
 	sites_default_path=$drop_docroot/sites/default
-	if [ -e "$sites_default_path/settings.php" ]
+	if [ ! "$config_install_settingsphp_filename" ]
 		then
-		settingsphp_original=$drop_docroot/sites/default/settings.php
-		settingsphp_backup=$drop_docroot/sites/default/original.settings.php
-		chmod -R u+w $sites_default_path
+		config_install_settingsphp_filename=$_default_settingsphp_name
+	fi
+
+	chmod -R u+w $sites_default_path
+
+	local _preserve_original_settingsphp
+	if [ "$config_install_settingsphp_filename" ] && [ "$config_install_settingsphp_filename" != "$_default_settingsphp_name" ]
+		then
+		if [ ! -e $sites_default_path/$_default_settingsphp_name ]
+			then
+			echo "No settings.php found or configured to be generated."
+			exit 1
+		fi
+		_preserve_original_settingsphp="true"
+	fi
+
+	if [ "$_preserve_original_settingsphp" = "true" ]
+		then
 		mv $sites_default_path/settings.php $sites_default_path/original.settings.php
 	fi
+
 	drush --root=$drop_docroot dl settingsphp -y
 	drush --root=$drop_docroot cc drush -y
 	drush --root=$drop_docroot settingsphp-generate --db-url=$__db_url $force_yes
-	if [ -e "$sites_default_path/original.settings.php" ]
+
+	if [ "$_preserve_original_settingsphp" = "true" ]
 		then
-		mv $sites_default_path/settings.php $sites_default_path/settings.db.php
+		mv $sites_default_path/settings.php $sites_default_path/$config_install_settingsphp_filename
 		mv $sites_default_path/original.settings.php $sites_default_path/settings.php
-		echo 'require_once dirname(__FILE__) . "/settings.db.php";' >> $sites_default_path/settings.php
-		echo "[Warning] settings.php is appended by settings.db.php to add database credentials"
 	fi
 
 }

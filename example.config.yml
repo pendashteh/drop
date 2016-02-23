@@ -16,6 +16,13 @@ profile:
 	# path to the directory containing {profile_name}.info
 	path: /path/to/profile/file
 
+install:
+	settingsphp:
+		# If true, the database credentials would be written to a php file which is specififed by the config below
+		generate: true
+		# Optional, settings.php by default. If you do not want settings.php to be generated include a separate file there and put the filename here
+		filename: settings.php
+
 makefile:
 	# path to makefile to be used by drush.
 	path: stub.make
