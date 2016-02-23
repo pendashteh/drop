@@ -49,8 +49,13 @@ _load_config_file() {
 
 	. $script_root/scripts/parse_yaml.sh $_config_path $_config_prefix
 	# If there is a base config we need to reload them both again
-	if [ ! "$_load_config__load_base_disallowed" ] && [ "$config_base" ] && [ -e "$root/$config_base" ]
+	if [ ! "$_load_config__load_base_disallowed" ] && [ "$config_base" ]
 		then
+		if [ ! -e "$root/$config_base" ]
+			then
+			echo "Base config file could not be faound at $root/$config_base (defined at $_config_path)"
+			exit 1
+		fi
 		_load_config__load_base_disallowed="true"
 		_load_config_file $root/$config_base
 		# We make sure that we do not recursively load its base!
