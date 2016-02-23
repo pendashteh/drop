@@ -22,6 +22,8 @@ profile:
 install:
 	# if specified will be installed first and $config_profile_name will be installed on top of it. defaults to empty
 	base_profile: standard
+	# will revert all features after installation
+	features_revert_all: true
 	settingsphp:
 		# If true, the database credentials would be written to a php file which is specififed by the config below
 		generate: true
@@ -48,6 +50,5 @@ deploy:
 
 # install:
 # 	db_dump: $root/db/dump.sql
-# 	features_revert_all: true
 # 	# If specified will be executed in $config_profile_path
 # 	post_script: $root/post-install.sh
