@@ -27,7 +27,7 @@ main () {
 	[ ! -e "$config_path" ] && echo "Config file could not be found at $config_path. To create one please @see example.config.yml" && exit 1
 
 	# Read local config variables
-	. $script_root/scripts/parse_yaml.sh $config_path "config_"
+	_load_config_file $config_path
 
 	# Validate config variables:
 	[ "$config_install_db_dump" = "true" ] && [[ ! -e $config_install_db_dump ]] && echo "Database dump not found at "$config_install_db_dump && exit 1
@@ -43,6 +43,20 @@ main () {
 	drop_docroot=$config_drupal_docroot
 }
 
+_load_config_file() {
+	local _config_path=$1
+	local _config_prefix="config_"
+
+	. $script_root/scripts/parse_yaml.sh $_config_path $_config_prefix
+	# If there is a base config we need to reload them both again
+	if [ ! "$_load_config__load_base_disallowed" ] && [ "$config_base" ] && [ -e "$root/$config_base" ]
+		then
+		_load_config__load_base_disallowed="true"
+		_load_config_file $root/$config_base
+		# We make sure that we do not recursively load its base!
+		_load_config_file $_config_path
+	fi
+}
 _validate_profile() {
 	# Finalize config variables
 	if [ ! -e "$config_profile_path/$config_profile_name.info" ]

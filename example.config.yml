@@ -5,6 +5,9 @@
 # - $root: points to the directory containing this config file.
 #
 
+# If specified, will be loaded before this config
+base: base.yml
+
 drupal:
 	url: http://localhost/
 	docroot: _build
