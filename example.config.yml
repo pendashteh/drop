@@ -26,17 +26,17 @@ deploy:
 	install:
 		print_uli: false
 
-build:
-	# this path will be used as docroot using symlink [if specified profile_makefile will be ignored]
-	source: /path/to/source/code
-	# If set, a symlink to sites/default/files will be created
-	files: /path/to/public-files
-	# If set true, will create a symblink to the repo (for live dev)
-	symlink_to_profile: false 
+# build:
+# 	# this path will be used as docroot using symlink [if specified profile_makefile will be ignored]
+# 	source: /path/to/source/code
+# 	# If set, a symlink to sites/default/files will be created
+# 	files: /path/to/public-files
+# 	# If set true, will create a symblink to the repo (for live dev)
+# 	symlink_to_profile: false
 
-install:
-	base_profile: standard
-	db_dump: $root/db/dump.sql
-	features_revert_all: true
-	# If specified will be executed in $config_profile_path
-	post_script: $root/post-install.sh
+# install:
+# 	base_profile: standard
+# 	db_dump: $root/db/dump.sql
+# 	features_revert_all: true
+# 	# If specified will be executed in $config_profile_path
+# 	post_script: $root/post-install.sh
