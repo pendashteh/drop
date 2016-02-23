@@ -1,4 +1,4 @@
-# Copy this file as config.yml
+# You could use this file as a template for *.drop.yml config files
 # 
 # For paths, you could use '~' or $HOME
 # Also the following variables are available to be used
@@ -41,14 +41,3 @@ deploy:
 	profile: symlink
 	install:
 		print_uli: false
-
-# build:
-# 	# this path will be used as docroot using symlink [if specified profile_makefile will be ignored]
-# 	source: /path/to/source/code
-# 	# If set, a symlink to sites/default/files will be created
-# 	files: /path/to/public-files
-# 	# If set true, will create a symblink to the repo (for live dev)
-# 	symlink_to_profile: false
-
-# install:
-# 	db_dump: $root/db/dump.sql
