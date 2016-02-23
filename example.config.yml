@@ -8,6 +8,8 @@
 drupal:
 	url: http://localhost/
 	docroot: _build
+	# As in --db-url in `drush site-install`
+	db_url: mysql://drupaluser@127.0.0.1:3306/database_name
 
 profile:
 	name: profile_name
@@ -21,6 +23,8 @@ makefile:
 deploy:
 	docroot: makefile
 	profile: symlink
+	install:
+		print_uli: false
 
 build:
 	# this path will be used as docroot using symlink [if specified profile_makefile will be ignored]
@@ -32,10 +36,7 @@ build:
 
 install:
 	base_profile: standard
-	# As in --db-url in `drush si` 
-	db_url: mysql://drupaluser@127.0.0.1:3306/database_name
 	db_dump: $root/db/dump.sql
 	features_revert_all: true
-	print_uli: false
 	# If specified will be executed in $config_profile_path
 	post_script: $root/post-install.sh

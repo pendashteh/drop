@@ -20,9 +20,9 @@ main() {
 		then
 		_validate_profile
 	fi
-	_check_database_connection
+	_check_database_connection $config_drupal_db_url
 
-	_generate_settings_php $config_install_db_url
+	_generate_settings_php $config_drupal_db_url
 
 	if [[ -e $config_install_db_dump ]]
 		then
@@ -45,13 +45,13 @@ main() {
 	fi
 
 
-	drush --root=$config_build_path updb $force_yes
+	drush --root=$drop_docroot updb $force_yes
 
-	drush --root=$config_build_path cc all
+	drush --root=$drop_docroot cc all
 
 	if [ "$config_install_features_revert_all" = "true" ]
 		then
-		drush --root=$config_build_path fra $force_yes
+		drush --root=$drop_docroot fra $force_yes
 	fi
 
 	if [ -s "$config_install_post_script" ]
@@ -59,9 +59,9 @@ main() {
 		_exec_script $config_install_post_script;
 	fi
 
-	if [ "$config_install_print_uli" = "true" ]
+	if [ "$config_deploy_install_print_uli" = "true" ]
 		then
-		drush --root=$config_build_path uli --browser=0
+		drush --root=$drop_docroot uli --browser=0 --uri=$config_drupal_url
 	fi
 
 	echo "Finished successfully."
@@ -69,30 +69,31 @@ main() {
 }
 
 _check_database_connection() {
+	local __db_url=$1
 	# @FIXME this method will not detect wrong port and will pass anyways.
-	mysql_command=$(drush --root=$config_build_path sql-connect --db-url=$config_install_db_url)
+	mysql_command=$(drush --root=$drop_docroot sql-connect --db-url=$__db_url)
 	error="$($mysql_command -e ';')"
 }
 
 enable_profile() {
-	drush --root=$config_build_path vset --exact -y install_profile $1
-	drush --root=$config_build_path en $1 $force_yes
+	drush --root=$drop_docroot vset --exact -y install_profile $1
+	drush --root=$drop_docroot en $1 $force_yes
 }
 
 _generate_settings_php() {
 	local __db_url=$1
 
-	sites_default_path=$config_build_path/sites/default
+	sites_default_path=$drop_docroot/sites/default
 	if [ -e "$sites_default_path/settings.php" ]
 		then
-		settingsphp_original=$config_build_path/sites/default/settings.php
-		settingsphp_backup=$config_build_path/sites/default/original.settings.php
+		settingsphp_original=$drop_docroot/sites/default/settings.php
+		settingsphp_backup=$drop_docroot/sites/default/original.settings.php
 		chmod -R u+w $sites_default_path
 		mv $sites_default_path/settings.php $sites_default_path/original.settings.php
 	fi
-	drush --root=$config_build_path dl settingsphp -y
-	drush --root=$config_build_path cc drush -y
-	drush --root=$config_build_path settingsphp-generate --db-url=$__db_url $force_yes
+	drush --root=$drop_docroot dl settingsphp -y
+	drush --root=$drop_docroot cc drush -y
+	drush --root=$drop_docroot settingsphp-generate --db-url=$__db_url $force_yes
 	if [ -e "$sites_default_path/original.settings.php" ]
 		then
 		mv $sites_default_path/settings.php $sites_default_path/settings.db.php
@@ -105,14 +106,14 @@ _generate_settings_php() {
 
 _install_profile() {
 	local __profile=$1
-	drush --root=$config_build_path si $__profile $force_yes
+	drush --root=$drop_docroot si $__profile $force_yes
 }
 
 _import_db() {
 	local __db_dump=$1
-	drush --root=$config_build_path sql-cli < $__db_dump
+	drush --root=$drop_docroot sql-cli < $__db_dump
 	echo "Rebuilding registry..."
-	php $script_root/scripts/rr.php --root=$config_build_path 1>/dev/null
+	php $script_root/scripts/rr.php --root=$drop_docroot 1>/dev/null
 }
 
 main
