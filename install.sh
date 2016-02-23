@@ -132,6 +132,8 @@ _install_profile() {
 
 _import_db() {
 	local __db_dump=$1
+	echo "making sure the current database is empty"
+	drush --root=$drop_docroot sql-drop $force_yes
 	drush --root=$drop_docroot sql-cli < $__db_dump
 	echo "Rebuilding registry..."
 	php $script_root/scripts/rr.php --root=$drop_docroot 1>/dev/null
