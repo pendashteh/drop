@@ -1,0 +1,43 @@
+# You could use this file as a template for *.drop.yml config files
+# 
+# For paths, you could use '~' or $HOME
+# Also the following variables are available to be used
+# - $root: points to the directory containing this config file.
+#
+
+# If specified, will be loaded before this config
+base: base.yml
+
+drupal:
+	url: http://localhost/
+	docroot: _build
+	# As in --db-url in `drush site-install`
+	db_url: mysql://drupaluser@127.0.0.1:3306/database_name
+
+profile:
+	name: profile_name
+	# path to the directory containing {profile_name}.info
+	path: /path/to/profile/file
+
+install:
+	# if specified will be installed first and $config_profile_name will be installed on top of it. defaults to empty
+	base_profile: standard
+	# will revert all features after installation
+	features_revert_all: true
+	settingsphp:
+		# If true, the database credentials would be written to a php file which is specififed by the config below
+		generate: true
+		# Optional, settings.php by default. If you do not want settings.php to be generated include a separate file there and put the filename here
+		filename: settings.php
+	# If specified will be executed in $config_profile_path
+	post_script: $root/post-install.sh
+
+makefile:
+	# path to makefile to be used by drush.
+	path: stub.make
+
+deploy:
+	docroot: makefile
+	profile: symlink
+	install:
+		print_uli: false
