@@ -29,6 +29,8 @@ install:
 		generate: true
 		# Optional, settings.php by default. If you do not want settings.php to be generated include a separate file there and put the filename here
 		filename: settings.php
+	# If specified will be executed in $config_profile_path
+	post_script: $root/post-install.sh
 
 makefile:
 	# path to makefile to be used by drush.
@@ -50,5 +52,3 @@ deploy:
 
 # install:
 # 	db_dump: $root/db/dump.sql
-# 	# If specified will be executed in $config_profile_path
-# 	post_script: $root/post-install.sh
