@@ -20,6 +20,7 @@ main() {
 		then
 		_validate_profile
 	fi
+
 	_check_database_connection $config_drupal_db_url
 
 	_generate_settings_php $config_drupal_db_url
@@ -83,7 +84,7 @@ enable_profile() {
 _generate_settings_php() {
 	if [ ! "$config_install_settingsphp_generate" = "true" ]
 		then
-		exit
+		return
 	fi
 
 	local __db_url=$1
