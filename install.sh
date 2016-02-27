@@ -16,6 +16,9 @@ set -e
 
 main() {
 
+	# Needs to be moved when 'defaults' feature has been implemented
+	config_defaults_profile_name="standard"
+
 	if [ "$config_profile_name" ]
 		then
 		_validate_profile
@@ -25,8 +28,13 @@ main() {
 
 	_generate_settings_php $config_drupal_db_url
 
-	if [[ -e $config_install_db_dump ]]
+	if [ $config_install_db_dump ]
 		then
+		if [[ ! -e $config_install_db_dump ]]
+			then
+			echo "DB dump could not be found at $config_install_db_dump"
+			exit 1
+		fi
 		_import_db $config_install_db_dump
 		if [ "$config_profile_name" ]
 			then
@@ -34,7 +42,11 @@ main() {
 			enable_profile $config_profile_name
 		fi
 	else
-		if [ ! "$config_install_base_profile" ] || [ "$config_install_base_profile" = "$config_profile_name" ]
+		if [ ! "$config_profile_name" ]
+			then
+			echo "Installing default profile ($config_defaults_profile_name)"
+			_install_profile $config_defaults_profile_name
+		elif [ ! "$config_install_base_profile" ] || [ "$config_install_base_profile" = "$config_profile_name" ]
 			then
 			echo "Installing $config_profile_name profile"
 			_install_profile $config_profile_name
@@ -116,7 +128,7 @@ _generate_settings_php() {
 
 	drush --root=$drop_docroot dl settingsphp -y
 	drush --root=$drop_docroot cc drush -y
-	drush --root=$drop_docroot settingsphp-generate --db-url=$__db_url $force_yes
+	debug drush --root=$drop_docroot settingsphp-generate --db-url=$__db_url --db-prefix="kids_drupal_" $force_yes
 
 	if [ "$_preserve_original_settingsphp" = "true" ]
 		then
@@ -135,7 +147,7 @@ _import_db() {
 	local __db_dump=$1
 	echo "making sure the current database is empty"
 	drush --root=$drop_docroot sql-drop $force_yes
-	drush --root=$drop_docroot sql-cli < $__db_dump
+	debug drush --root=$drop_docroot sql-cli < $__db_dump
 	echo "Rebuilding registry..."
 	php $script_root/scripts/rr.php --root=$drop_docroot 1>/dev/null
 }

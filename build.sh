@@ -13,10 +13,11 @@ main() {
 	echo "Build the profile if required"
 	_build_profile
 
+	echo "Deploy files if required"
 	_build_files
 }
 _purge_build_path() {
-	if [ -e "$drop_docroot" ]
+	if [ -L "$drop_docroot" ] || [ -d "$drop_docroot" ]
 		then
 		chmod -R u+w $drop_docroot
 		rm -rf $drop_docroot
@@ -36,9 +37,8 @@ _prepare_build_path() {
 _build_codebase() {
 	if [ "$config_deploy_docroot" = "symlink" ]
 		then
-		echo "Using the source at $config_build_docroot_source"
-		_prepare_build_path
-		rm -rf $drop_docroot
+		echo "Using the source at $config_codebase_path"
+		_purge_build_path
 		# @FIXME needs to be added to config, validated and tested
 		debug ln -nFs $config_codebase_path $drop_docroot
 	elif [ "$config_deploy_docroot" = "makefile" ]
@@ -71,8 +71,13 @@ _build_profile() {
 	return 0
 }
 _build_files() {
-	# Link files directory
-	[[ $config_build_files ]] && ln -nfs $config_build_files $drop_docroot/sites/default/files
+	if [ "$config_deploy_files" = "symlink" ]
+		then
+		echo "Using the source at $config_build_docroot_source"
+		rm -rf $drop_docroot/sites/default/files
+		# @FIXME needs to be added to config, validated and tested
+		ln -nfs $config_files_public $drop_docroot/sites/default/files
+	fi
 	return 0
 }
 
