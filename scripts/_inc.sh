@@ -21,6 +21,7 @@ main () {
 	config_install_features_revert_all=false
 	config_install_print_uli=false
 	config_build_symlink_to_profile=false
+	config_install_settingsphp_generate=true
 
 	[ "$task" = "init" ] && return
 

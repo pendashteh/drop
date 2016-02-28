@@ -25,7 +25,7 @@ install:
 	# will revert all features after installation
 	features_revert_all: true
 	settingsphp:
-		# If true, the database credentials would be written to a php file which is specififed by the config below
+		# If true, the database credentials would be written to a php file which is specififed by the config below, by default set to true
 		generate: true
 		# Optional, settings.php by default. If you do not want settings.php to be generated include a separate file there and put the filename here
 		filename: settings.php
