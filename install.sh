@@ -28,7 +28,7 @@ main() {
 
 	_generate_settings_php $config_drupal_db_url
 
-	if [ $config_install_db_dump ]
+	if [ "$config_install_db_dump" ]
 		then
 		if [[ ! -e $config_install_db_dump ]]
 			then
