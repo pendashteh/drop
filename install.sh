@@ -96,6 +96,7 @@ enable_profile() {
 _generate_settings_php() {
 	if [ ! "$config_install_settingsphp_generate" = "true" ]
 		then
+		echo "Using the existing settings.php."
 		return
 	fi
 
