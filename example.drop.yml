@@ -36,6 +36,10 @@ makefile:
 	# path to makefile to be used by drush.
 	path: stub.make
 
+build:
+	# The content of this directory will be synced with sites/ folder in docroot
+	sitesdir: sites
+
 deploy:
 	docroot: makefile
 	profile: symlink

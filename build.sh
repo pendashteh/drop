@@ -10,6 +10,9 @@ main() {
 	echo "Build the codebase in $drop_docroot"
 	_build_codebase
 
+	echo "Updates the sync direcroty if required"
+	_build_sites
+
 	echo "Build the profile if required"
 	_build_profile
 
@@ -67,6 +70,21 @@ _build_profile() {
 	  rm -rf $drop_docroot/profiles/$config_profile_name
 	  cp -r $config_profile_path/ $drop_docroot/profiles/$config_profile_name
 	  rm -rf $drop_docroot/profiles/$config_profile_name/.git*
+	fi
+	return 0
+}
+_build_sites() {
+	if [ "$config_build_sitesdir" ]
+		then
+		sitesdir=$root/$config_build_sitesdir
+		if [ ! -d "$sitesdir" ]
+			then
+			echo "Sites directory was not found at $sitesdir"
+			exit 1
+		fi
+		echo "Syncing sites dir with $config_build_sitesdir"
+		chmod -R u+w $drop_docroot/sites
+		debug rsync -av $sitesdir/ $drop_docroot/sites
 	fi
 	return 0
 }
