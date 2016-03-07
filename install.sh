@@ -58,13 +58,13 @@ main() {
 	fi
 
 
-	drush --root=$drop_docroot updb $force_yes
+	debug drush --root=$drop_docroot updb $force_yes
 
-	drush --root=$drop_docroot cc all
+	debug drush --root=$drop_docroot cc all
 
 	if [ "$config_install_features_revert_all" = "true" ]
 		then
-		drush --root=$drop_docroot fra $force_yes
+		debug drush --root=$drop_docroot fra $force_yes
 	fi
 
 	if [ -s "$config_install_post_script" ]
@@ -89,8 +89,8 @@ _check_database_connection() {
 }
 
 enable_profile() {
-	drush --root=$drop_docroot vset --exact -y install_profile $1
-	drush --root=$drop_docroot en $1 $force_yes
+	debug drush --root=$drop_docroot vset --exact -y install_profile $1
+	debug drush --root=$drop_docroot en $1 $force_yes
 }
 
 _generate_settings_php() {
@@ -150,13 +150,13 @@ _install_settingsphp_check() {
 
 _install_profile() {
 	local __profile=$1
-	drush --root=$drop_docroot si $__profile $force_yes
+	debug drush --root=$drop_docroot si $__profile $force_yes
 }
 
 _import_db() {
 	local __db_dump=$1
 	echo "making sure the current database is empty"
-	drush --root=$drop_docroot sql-drop $force_yes
+	debug drush --root=$drop_docroot sql-drop $force_yes
 	debug drush --root=$drop_docroot sql-cli < $__db_dump
 	echo "Rebuilding registry..."
 	php $script_root/scripts/rr.php --root=$drop_docroot 1>/dev/null
