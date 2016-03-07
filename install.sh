@@ -126,8 +126,7 @@ _generate_settings_php() {
 		mv $sites_default_path/settings.php $sites_default_path/original.settings.php
 	fi
 
-	drush --root=$drop_docroot dl settingsphp -y
-	drush --root=$drop_docroot cc drush -y
+	_install_settingsphp_check
 	debug drush --root=$drop_docroot settingsphp-generate --db-url=$__db_url --db-prefix="kids_drupal_" $force_yes
 
 	if [ "$_preserve_original_settingsphp" = "true" ]
@@ -136,6 +135,16 @@ _generate_settings_php() {
 		mv $sites_default_path/original.settings.php $sites_default_path/settings.php
 	fi
 
+}
+
+_install_settingsphp_check() {
+	settingsphp_check_command="drush settingsphp-generate --help"
+	if [ ! "$($settingsphp_check_command 2>/dev/null)" ]
+		then
+		echo "Installing settingsphp.module..."
+		drush --root=$drop_docroot dl settingsphp -y
+		drush --root=$drop_docroot cc drush -y
+	fi
 }
 
 _install_profile() {
