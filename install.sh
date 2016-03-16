@@ -143,8 +143,8 @@ _install_settingsphp_check() {
 	if [ ! "$($settingsphp_check_command 2>/dev/null)" ]
 		then
 		echo "Installing settingsphp.module..."
-		drush --root=$drop_docroot dl settingsphp -y
-		drush --root=$drop_docroot cc drush -y
+		drush dl settingsphp -y
+		drush cc drush -y
 	fi
 }
 
