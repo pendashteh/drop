@@ -57,6 +57,9 @@ _load_config_file() {
 			then
 			echo "Base config file could not be faound at $_config_base_path (defined at $_config_path)"
 			exit 1
+		elif [ "$_config_base_path" = "$_config_path" ]; then
+			echo "Config file cannot use itself as base. ($_config_path)"
+			exit 1
 		fi
 		_load_config_file $_config_base_path
 		# We make sure that we do not recursively load its base!
