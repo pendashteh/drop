@@ -35,6 +35,7 @@ main () {
 	[ "$config_install_post_script" ] && [[ ! -s $config_install_post_script ]] && echo "Could not locate post-install script at "$config_install_post_script && exit 1
 
 	config_profile_path=$(_get_abs_path $config_profile_path)
+	config_build_sitesdir=$(_get_abs_path $config_build_sitesdir)
 	config_makefile_path=$(_get_abs_path $config_makefile_path)
 	config_build_source=$(_get_abs_path $config_build_source)
 	config_install_post_script=$(_get_abs_path $config_install_post_script)

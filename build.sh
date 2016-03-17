@@ -76,15 +76,14 @@ _build_profile() {
 _build_sites() {
 	if [ "$config_build_sitesdir" ]
 		then
-		sitesdir=$root/$config_build_sitesdir
-		if [ ! -d "$sitesdir" ]
+		if [ ! -d "$config_build_sitesdir" ]
 			then
-			echo "Sites directory was not found at $sitesdir"
+			echo "Sites directory was not found at $config_build_sitesdir"
 			exit 1
 		fi
 		echo "Syncing sites dir with $config_build_sitesdir"
 		chmod -R u+w $drop_docroot/sites
-		debug rsync -av $sitesdir/ $drop_docroot/sites
+		debug rsync -av $config_build_sitesdir/ $drop_docroot/sites
 	fi
 	return 0
 }
