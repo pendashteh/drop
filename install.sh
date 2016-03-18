@@ -72,7 +72,7 @@ main() {
 		_exec_script $config_install_post_script;
 	fi
 
-	if [ "$config_deploy_install_print_uli" = "true" ]
+	if [ "$config_install_print_uli" = "true" ]
 		then
 		drush --root=$drop_docroot uli --browser=0 --uri=$config_drupal_url
 	fi

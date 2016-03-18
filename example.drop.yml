@@ -31,6 +31,8 @@ install:
 		filename: settings.php
 	# If specified will be executed in $config_profile_path
 	post_script: $root/post-install.sh
+	# if set to true, will print a online-link at the end
+	print_uli: false
 
 makefile:
 	# path to makefile to be used by drush.
@@ -45,5 +47,3 @@ build:
 deploy:
 	docroot: makefile
 	profile: symlink
-	install:
-		print_uli: false
