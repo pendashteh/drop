@@ -1,9 +1,9 @@
 #!/bin/bash
-# Usage: ./build.sh [--purge]
+# Usage: drop -- build
 set -e
 
-purge=false
-[[ $1 = "--purge" ]] && purge=true
+_config_makefile_purge=true
+[ "$config_makefile_purge" ] && _config_makefile_purge=$config_makefile_purge
 
 main() {
 
@@ -27,11 +27,6 @@ _purge_build_path() {
 	fi
 }
 _prepare_build_path() {
-	if [ "$purge" = "true" ]
-		then
-		echo "Destroying the previous build"
-		_purge_build_path
-	fi
 	mkdir -p $drop_docroot
 	drop_docroot=$(_get_abs_path $drop_docroot)
 	[[ -d $drop_docroot/sites/default ]] && chmod -R u+w $drop_docroot/sites/default
@@ -48,9 +43,16 @@ _build_codebase() {
 		then
 		_validate_makefile
 		echo "Using the makefile $config_makefile_path"
-		_prepare_build_path
-		cd $drop_docroot
-		drush make $config_makefile_path .
+		if [ "$_config_makefile_purge" = "true" ]; then
+			echo "Destroying the existing build"
+			_purge_build_path
+			debug drush make $config_makefile_path $drop_docroot
+		else
+			echo "Re-building the existing directory."
+			_prepare_build_path
+			cd $drop_docroot
+			debug drush make $config_makefile_path .
+		fi
 	else
 		echo "No source found."
 		exit 1
