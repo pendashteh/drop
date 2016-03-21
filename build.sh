@@ -65,6 +65,7 @@ _build_profile() {
 	if [ "$config_deploy_profile" = "symlink" ]
 	  then
 	  echo "Creating a symlink to profile at $config_profile_path"
+	  debug rm -rf $drop_docroot/profiles/$config_profile_name
 	  debug ln -nfs $config_profile_path $drop_docroot/profiles/$config_profile_name
 	elif [ "$config_deploy_profile" = "copy" ]
 	  then
