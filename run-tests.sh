@@ -5,6 +5,6 @@
 # 
 set -e
 
-[ "$BASH_ARGV" != "$BASH_SOURCE" ] && vars="${@}" || vars=""
+[ "$BASH_ARGV" != "$BASH_SOURCE" ] && vars="${@}" || vars="--help"
 
-php $drop_docroot/scripts/run-tests.sh $vars
+php $drop_docroot/scripts/run-tests.sh --url $config_drupal_url --verbose --color $vars
