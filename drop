@@ -15,20 +15,22 @@ whereis_realpath() { local SCRIPT_PATH=$(whereis $1); myreadlink ${SCRIPT_PATH} 
 config_path=$1
 script_root=$(dirname $(whereis_realpath "$0"))
 
+drop_run_task() {
+	local task=$1
+	local task_args=$2
+	task_script_path=$script_root/$task.sh
+	if [ ! -e "$task_script_path" ]
+		then
+		echo "Drop task '$task' was not found. (Expected at $task_script_path)"
+		exit 1
+	fi
+	. $task_script_path $task_args
+}
+
 task=$2
 [ ! "$task" ] && echo "No task provided." && exit 1
 
 . $script_root/scripts/_inc.sh;
+drop_read_config $config_path
 
-task_script_path=$script_root/$task.sh
-
-if [ ! -e "$task_script_path" ]
-	then
-	echo "Task script was not found at $task_script_path"
-	exit 1
-fi
-
-. $task_script_path "${@:3}"
-
-
-
+drop_run_task $task "${@:3}"

@@ -10,6 +10,11 @@ main() {
 
 	debug drush --root=$drop_docroot cc all
 
+	if [ "$config_install_rebuild_permissions" = "true" ]
+		then
+		debug drush --root=$drop_docroot ev 'node_access_rebuild();'
+	fi
+
 	if [ "$config_install_features_revert_all" = "true" ]
 		then
 		debug drush --root=$drop_docroot fra $force_yes

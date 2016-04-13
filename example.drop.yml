@@ -22,8 +22,10 @@ profile:
 install:
 	# if specified will be installed first and $config_profile_name will be installed on top of it. defaults to empty
 	base_profile: standard
-	# will revert all features after installation
-	features_revert_all: true
+	# will revert all features on site update
+	features_revert_all: false
+	# will rebuild node permission on site update
+	rebuild_permissions: true
 	settingsphp:
 		# If true, the database credentials would be written to a php file which is specififed by the config below, by default set to true
 		generate: true

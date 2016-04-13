@@ -3,7 +3,7 @@
 
 [ "$DEBUG" = "true" ] && debug_mode=true
 
-main () {
+drop_read_config () {
 
 	[ "$config_path" = "--" ] && config_path="./config.yml"
 	root=$(_get_dir_path $config_path)
@@ -18,6 +18,7 @@ main () {
 	config_profile_path=$root/profile
 	config_profile_makefile="stub.make"
 	config_install_features_revert_all=false
+	config_install_rebuild_permissions=true
 	config_install_print_uli=false
 	config_build_symlink_to_profile=false
 	config_install_settingsphp_generate=true
@@ -128,4 +129,3 @@ _config_confirm() {
 	fi
 }
 
-main

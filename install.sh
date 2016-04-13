@@ -57,25 +57,8 @@ main() {
 		fi
 	fi
 
-
-	debug drush --root=$drop_docroot updb $force_yes
-
-	debug drush --root=$drop_docroot cc all
-
-	if [ "$config_install_features_revert_all" = "true" ]
-		then
-		debug drush --root=$drop_docroot fra $force_yes
-	fi
-
-	if [ -s "$config_install_post_script" ]
-		then
-		_exec_script $config_install_post_script;
-	fi
-
-	if [ "$config_install_print_uli" = "true" ]
-		then
-		drush --root=$drop_docroot uli --browser=0 --uri=$config_drupal_url
-	fi
+	echo "Running update process..."
+	drop_run_task update $force_yes
 
 	echo "Finished successfully."
 	exit 0
