@@ -3,7 +3,7 @@
 
 [ "$DEBUG" = "true" ] && debug_mode=true
 
-main () {
+drop_read_config () {
 
 	[ "$config_path" = "--" ] && config_path="./config.yml"
 	root=$(_get_dir_path $config_path)
@@ -128,4 +128,3 @@ _config_confirm() {
 	fi
 }
 
-main
