@@ -17,7 +17,7 @@ script_root=$(dirname $(whereis_realpath "$0"))
 
 drop_run_task() {
 	local task=$1
-	local task_args=$2
+	local task_args="${@:2}"
 	task_script_path=$script_root/$task.sh
 	if [ ! -e "$task_script_path" ]
 		then
