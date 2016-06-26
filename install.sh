@@ -46,13 +46,13 @@ main() {
 			then
 			echo "Installing default profile ($config_defaults_profile_name)"
 			_install_profile $config_defaults_profile_name
-		elif [ ! "$config_install_base_profile" ] || [ "$config_install_base_profile" = "$config_profile_name" ]
+		elif [ ! "$config_profile_base" ] || [ "$config_profile_base" = "$config_profile_name" ]
 			then
 			echo "Installing $config_profile_name profile"
 			_install_profile $config_profile_name
 		else
-			echo "Installing $config_profile_name on top of $config_install_base_profile"
-			_install_profile $config_install_base_profile
+			echo "Installing $config_profile_name on top of $config_profile_base"
+			_install_profile $config_profile_base
 			enable_profile $config_profile_name
 		fi
 	fi
