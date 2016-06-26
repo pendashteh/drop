@@ -73,7 +73,7 @@ _validate_profile() {
 	# Finalize config variables
 	if [ ! -e "$config_profile_path/$config_profile_name.info" ]
 		then
-		echo "Profile not found at "$config_profile_path
+		echo "Profile $config_profile_name not found at $config_profile_path"
 		exit 1
 	fi
 }
