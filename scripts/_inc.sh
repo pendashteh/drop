@@ -117,7 +117,6 @@ _config_review() {
 	echo "Database URL:" $config_install_db_url
 	echo "Database dump:" $config_install_db_dump
 	echo "Revert all features:" $config_install_reatures_revert_all
-	echo "Create a symbolic link to the profile in the repo:" $([ "$config_build_symlink_to_profile" = true ] &&  echo "Yes" || echo "No")
 	echo "Post-install script:" $([ -s "$config_install_post_script" ] &&  echo $config_install_post_script || echo "N/A")
 	echo "----------------------"
 }

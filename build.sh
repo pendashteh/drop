@@ -2,9 +2,6 @@
 # Usage: drop -- build
 set -e
 
-_config_makefile_purge=true
-[ "$config_makefile_purge" ] && _config_makefile_purge=$config_makefile_purge
-
 main() {
 
 	echo "Build the codebase in $drop_docroot"
@@ -43,15 +40,19 @@ _build_codebase() {
 		then
 		_validate_makefile
 		echo "Using the makefile $config_makefile_path"
-		if [ "$_config_makefile_purge" = "true" ]; then
-			echo "Destroying the existing build"
-			_purge_build_path
-			debug drush make $config_makefile_path $drop_docroot
+		_purge_build_path
+		# Check if the profile needs to be symlink
+		if [ "$config_deploy_profile" = "symlink" ]; then
+			_validate_profile
+			# First get only core and skip the profile
+			debug drush make $config_makefile_path $drop_docroot --no-recursion
+			# Then make all the profile dependencies into sites/all
+			local _profile_makefile_path="$config_profile_path/drupal-org.make"
+			if [ -e "$_profile_makefile_path" ]; then
+				debug drush make $_profile_makefile_path $drop_docroot --no-core --contrib-destination="sites/all"
+			fi
 		else
-			echo "Re-building the existing directory."
-			_prepare_build_path
-			cd $drop_docroot
-			debug drush make $config_makefile_path .
+			debug drush make $config_makefile_path $drop_docroot
 		fi
 	else
 		echo "No source found."

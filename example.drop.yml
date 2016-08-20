@@ -39,8 +39,6 @@ install:
 makefile:
 	# path to makefile to be used by drush.
 	path: stub.make
-	# if set to false, 'drush make' will be procssesed within the build path without destorying it, default to true
-	purge: true
 
 build:
 	# The content of this directory will be synced with sites/ folder in docroot
@@ -48,4 +46,5 @@ build:
 
 deploy:
 	docroot: makefile
+  # If set to symlink, it will make the profile drupal-org.make file into sites/all and create a symlink to the installation profile
 	profile: symlink
