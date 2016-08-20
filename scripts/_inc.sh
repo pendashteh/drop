@@ -37,7 +37,6 @@ drop_read_config () {
 
 	config_profile_path=$(_get_abs_path $config_profile_path)
 	config_build_sitesdir=$(_get_abs_path $config_build_sitesdir)
-	config_makefile_path=$(_get_abs_path $config_makefile_path)
 	config_build_source=$(_get_abs_path $config_build_source)
 	config_install_post_script=$(_get_abs_path $config_install_post_script)
 
@@ -83,6 +82,7 @@ _validate_makefile() {
 		echo "Makefile not found at "$config_makefile_path
 		exit 1
 	fi
+	config_makefile_path=$(_get_abs_path $config_makefile_path)
 }
 
 # put this before any command at it prints it to the screen before running it
