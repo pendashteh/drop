@@ -20,6 +20,8 @@ profile:
 	base: standard
 	# path to the directory containing {profile_name}.info
 	path: /path/to/profile/file
+  # If set to true, it will make the profile drupal-org.make file into sites/all and create a symlink to the installation profile
+	symlink: false
 
 install:
 	# will revert all features on site update
@@ -46,5 +48,3 @@ build:
 
 deploy:
 	docroot: makefile
-  # If set to symlink, it will make the profile drupal-org.make file into sites/all and create a symlink to the installation profile
-	profile: symlink
