@@ -1,8 +1,12 @@
 #!/bin/bash
-# Usage: $ drop -- install.sh [-y]
+# Usage: $ drop -- install [--ask]
 set -e
 
-[[ $1 = "-y" ]] && force_yes="-y"
+# Force 'yes' on Drush commands for non-interactive commands
+force_yes="-y"
+
+# User can choose to be asked for confirmations by Drush
+[[ $1 = "--ask" ]] && force_yes=""
 
 # Three cases:
 # 1. We install a fresh 'profile':
