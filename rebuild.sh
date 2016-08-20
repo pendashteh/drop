@@ -19,7 +19,6 @@ _build_codebase() {
 		then
 		_validate_makefile
 		echo "Using the makefile $config_makefile_path"
-		_purge_build_path
 
 		# Run the make files from within the docroot
 		cd $drop_docroot
