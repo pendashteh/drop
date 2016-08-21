@@ -15,25 +15,17 @@ main() {
 
 }
 _build_codebase() {
-	if [ "$config_deploy_docroot" = "makefile" ]
+	if [ "$config_makefile_path" ]
 		then
-		_validate_makefile
-		echo "Using the makefile $config_makefile_path"
-
 		# Run the make files from within the docroot
-		cd $drop_docroot
-		# Check if the profile needs to be symlink
-		if [ "$config_deploy_profile" = "symlink" ]; then
-			_validate_profile
-			# First get only core and skip the profile
-			debug drush make $config_makefile_path . --no-recursion
-			# Then make all the profile dependencies into sites/all
-			local _profile_makefile_path="$config_profile_path/drupal-org.make"
+		if [ "$config_profile_name" ]; then
+			local _profile_makefile_path="$drop_docroot/profiles/$config_profile_name/drupal-org.make"
 			if [ -e "$_profile_makefile_path" ]; then
-				debug drush make $_profile_makefile_path . --no-core --contrib-destination="sites/all"
+				cd $drop_docroot
+				debug drush make $_profile_makefile_path . --no-core
+			else
+				echo "No makefile found inside the profile ($_profile_makefile_path)"
 			fi
-		else
-			debug drush make $config_makefile_path .
 		fi
 	fi
 	return 0

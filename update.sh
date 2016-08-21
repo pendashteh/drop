@@ -26,7 +26,6 @@ main() {
 	fi
 
 	echo "Finished successfully."
-	exit 0
 }
 
 main
