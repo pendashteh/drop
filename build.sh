@@ -2,9 +2,6 @@
 # Usage: drop -- build
 set -e
 
-_config_makefile_purge=true
-[ "$config_makefile_purge" ] && _config_makefile_purge=$config_makefile_purge
-
 main() {
 
 	echo "Build the codebase in $drop_docroot"
@@ -33,46 +30,37 @@ _prepare_build_path() {
 	return 0
 }
 _build_codebase() {
-	if [ "$config_deploy_docroot" = "symlink" ]
-		then
-		echo "Using the source at $config_codebase_path"
-		_purge_build_path
-		# @FIXME needs to be added to config, validated and tested
-		debug ln -nFs $config_codebase_path $drop_docroot
-	elif [ "$config_deploy_docroot" = "makefile" ]
+	if [ "$config_makefile_path" ]
 		then
 		_validate_makefile
 		echo "Using the makefile $config_makefile_path"
-		if [ "$_config_makefile_purge" = "true" ]; then
-			echo "Destroying the existing build"
-			_purge_build_path
-			debug drush make $config_makefile_path $drop_docroot
+		_purge_build_path
+		# Check if the profile needs to be symlink
+		if [ "$config_profile_symlink" = "true" ]; then
+			_validate_profile
+			# First get only core and skip the profile
+			debug drush make $config_makefile_path $drop_docroot --no-recursion
+			# Then make all the profile dependencies into sites/all
+			local _profile_makefile_path="$config_profile_path/drupal-org.make"
+			if [ -e "$_profile_makefile_path" ]; then
+				debug drush make $_profile_makefile_path $drop_docroot --no-core --contrib-destination="sites/all"
+			fi
 		else
-			echo "Re-building the existing directory."
-			_prepare_build_path
-			cd $drop_docroot
-			debug drush make $config_makefile_path .
+			debug drush make $config_makefile_path $drop_docroot
 		fi
 	else
-		echo "No source found."
-		exit 1
+		echo "No source is provided to build the codebase."
 	fi
 	return 0
 }
 _build_profile() {	
-	[ "$config_deploy_profile" ] && _validate_profile
+	[ "$config_profile_path" ] && _validate_profile
 
-	if [ "$config_deploy_profile" = "symlink" ]
+	if [ "$config_profile_symlink" = "true" ]
 	  then
 	  echo "Creating a symlink to profile at $config_profile_path"
 	  debug rm -rf $drop_docroot/profiles/$config_profile_name
 	  debug ln -nfs $config_profile_path $drop_docroot/profiles/$config_profile_name
-	elif [ "$config_deploy_profile" = "copy" ]
-	  then
-	  echo "Deploying profile from $config_profile_path"
-	  rm -rf $drop_docroot/profiles/$config_profile_name
-	  cp -r $config_profile_path/ $drop_docroot/profiles/$config_profile_name
-	  rm -rf $drop_docroot/profiles/$config_profile_name/.git*
 	fi
 	return 0
 }

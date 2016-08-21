@@ -1,8 +1,12 @@
 #!/bin/bash
-# Usage: $ drop -- install.sh [-y]
+# Usage: $ drop -- install [--ask]
 set -e
 
-[[ $1 = "-y" ]] && force_yes="-y"
+# Force 'yes' on Drush commands for non-interactive commands
+force_yes="-y"
+
+# User can choose to be asked for confirmations by Drush
+[[ $1 = "--ask" ]] && force_yes=""
 
 # Three cases:
 # 1. We install a fresh 'profile':
@@ -57,13 +61,23 @@ main() {
 		fi
 	fi
 
+	echo "Enable modules if any specified"
+	_enable_modules
+
 	echo "Running update process..."
 	drop_run_task update $force_yes
 
+	echo "Creating a one-time login..."
+	drop_run_task drushuli
+
 	echo "Finished successfully."
-	exit 0
 }
 
+_enable_modules() {
+	if  [ "$config_install_enable_modules" ]; then
+		debug drush --root=$drop_docroot en $config_install_enable_modules $force_yes
+	fi
+}
 _check_database_connection() {
 	local __db_url=$1
 	# @FIXME this method will not detect wrong port and will pass anyways.
