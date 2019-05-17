@@ -61,11 +61,17 @@ main() {
 		fi
 	fi
 
+	echo "Install the theme if specified"
+	_install_theme
+
 	echo "Enable modules if any specified"
 	_enable_modules
 
 	echo "Disable modules if any specified"
 	_disable_modules
+
+	echo "Running the post install script, if provided"
+	_post_install_script
 
 	echo "Running update process..."
 	drop_run_task update $force_yes
@@ -74,6 +80,14 @@ main() {
 	drop_run_task drushuli
 
 	echo "Finished successfully."
+}
+
+_install_theme() {
+	if  [ "$config_install_theme" ]; then
+		debug $drush --root=$drop_docroot dl $config_install_theme $force_yes
+		debug $drush --root=$drop_docroot en $config_install_theme $force_yes
+		debug $drush --root=$drop_docroot vset theme_default $config_install_theme $force_yes
+	fi
 }
 
 _enable_modules() {
@@ -85,6 +99,13 @@ _enable_modules() {
 _disable_modules() {
 	if  [ "$config_install_disable_modules" ]; then
 		debug $drush --root=$drop_docroot dis $config_install_disable_modules $force_yes
+	fi
+}
+
+_post_install_script() {
+	if  [ "$config_install_post_script" ]; then
+		cd $drop_docroot
+		. $config_install_post_script
 	fi
 }
 

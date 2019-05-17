@@ -28,6 +28,7 @@ profile:
   symlink: false
 
 install:
+  theme: bootsrtap
   # will revert all features on site update
   features_revert_all: false
   # will rebuild node permission on site update
