@@ -1,5 +1,5 @@
 # You could use this file as a template for *.drop.yml config files
-# 
+#
 # For paths, you could use '~' or $HOME
 # Also the following variables are available to be used
 # - $root: points to the directory containing this config file.
@@ -13,42 +13,42 @@ php:
 drush:
   alias: "drush"
 drupal:
-	url: http://localhost/
-	docroot: _build
-	# As in --db-url in `drush site-install`
-	db_url: mysql://drupaluser@127.0.0.1:3306/database_name
+  url: http://localhost/
+  docroot: _build
+  # As in --db-url in `drush site-install`
+  db_url: mysql://drupaluser@127.0.0.1:3306/database_name
 
 profile:
-	name: profile_name
-	# if specified will be installed first and $config_profile_name will be installed on top of it. defaults to empty
-	base: standard
-	# path to the directory containing {profile_name}.info
-	path: /path/to/profile/file
+  name: profile_name
+  # if specified will be installed first and $config_profile_name will be installed on top of it. defaults to empty
+  base: standard
+  # path to the directory containing {profile_name}.info
+  path: /path/to/profile/file
   # If set to true, it will make the profile drupal-org.make file into sites/all and create a symlink to the installation profile
-	symlink: false
+  symlink: false
 
 install:
-	# will revert all features on site update
-	features_revert_all: false
-	# will rebuild node permission on site update
-	rebuild_permissions: true
-	settingsphp:
-		# If true, the database credentials would be written to a php file which is specififed by the config below, by default set to true
-		generate: true
-		# Optional, settings.php by default. If you do not want settings.php to be generated include a separate file there and put the filename here
-		filename: settings.php
-	# If specified will be executed in $config_profile_path
-	post_script: $root/post-install.sh
+  # will revert all features on site update
+  features_revert_all: false
+  # will rebuild node permission on site update
+  rebuild_permissions: true
+  settingsphp:
+    # If true, the database credentials would be written to a php file which is specififed by the config below, by default set to true
+    generate: true
+    # Optional, settings.php by default. If you do not want settings.php to be generated include a separate file there and put the filename here
+    filename: settings.php
+  # If specified will be executed in $config_profile_path
+  post_script: $root/post-install.sh
   # Modules will be enabled after a successfull install
   enable_modules: "speace separated list of modules"
 
 makefile:
-	# path to makefile to be used by drush.
-	path: stub.make
+  # path to makefile to be used by drush.
+  path: stub.make
 
 build:
-	# The content of this directory will be synced with sites/ folder in docroot
-	sitesdir: sites
+  # The content of this directory will be synced with sites/ folder in docroot
+  sitesdir: sites
 
 deploy:
-	docroot: makefile
+  docroot: makefile
