@@ -64,6 +64,9 @@ main() {
 	echo "Enable modules if any specified"
 	_enable_modules
 
+	echo "Disable modules if any specified"
+	_disable_modules
+
 	echo "Running update process..."
 	drop_run_task update $force_yes
 
@@ -78,6 +81,13 @@ _enable_modules() {
 		debug $drush --root=$drop_docroot en $config_install_enable_modules $force_yes
 	fi
 }
+
+_disable_modules() {
+	if  [ "$config_install_disable_modules" ]; then
+		debug $drush --root=$drop_docroot dis $config_install_disable_modules $force_yes
+	fi
+}
+
 _check_database_connection() {
 	local __db_url=$1
 	# @FIXME this method will not detect wrong port and will pass anyways.

@@ -41,6 +41,8 @@ install:
   post_script: $root/post-install.sh
   # Modules will be enabled after a successfull install
   enable_modules: "speace separated list of modules"
+  # A list of modules to disable after a successfull install
+  disable_modules: "speace separated list of modules"
 
 makefile:
   # path to makefile to be used by drush.
