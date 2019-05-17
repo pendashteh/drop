@@ -7,8 +7,9 @@
 	$ drop live.yml script scripts/sync-content.sh
 ```
 
+# Available commands
+`fix-missing-modules` Fixes the missing module error message. [https://www.drupal.org/project/module_missing_message_fixer]
 
 TODO
 - get database as a prefix when installing
-
-
+- add list of all commands
