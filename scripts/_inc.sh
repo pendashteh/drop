@@ -18,6 +18,7 @@ drop_read_config () {
 
 	cd $root
 
+	config_drush_alias="drush"
 	config_drupal_docroot=$root/_build
 	config_profile_path=$root/profile
 	config_profile_makefile="stub.make"
@@ -46,6 +47,7 @@ drop_read_config () {
 
 
 	drop_docroot=$config_drupal_docroot
+	drush=$config_drush_alias
 }
 
 _load_config_file() {
@@ -131,4 +133,3 @@ _config_confirm() {
 		exit 1
 	fi
 }
-

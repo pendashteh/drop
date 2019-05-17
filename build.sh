@@ -39,21 +39,21 @@ _build_codebase() {
 		if [ "$config_profile_symlink" = "true" ]; then
 			_validate_profile
 			# First get only core and skip the profile
-			debug drush make $config_makefile_path $drop_docroot --no-recursion
+			debug $drush make $config_makefile_path $drop_docroot --no-recursion
 			# Then make all the profile dependencies into sites/all
 			local _profile_makefile_path="$config_profile_path/drupal-org.make"
 			if [ -e "$_profile_makefile_path" ]; then
-				debug drush make $_profile_makefile_path $drop_docroot --no-core --contrib-destination="sites/all"
+				debug $drush make $_profile_makefile_path $drop_docroot --no-core --contrib-destination="sites/all"
 			fi
 		else
-			debug drush make $config_makefile_path $drop_docroot
+			debug $drush make $config_makefile_path $drop_docroot
 		fi
 	else
 		echo "No source is provided to build the codebase."
 	fi
 	return 0
 }
-_build_profile() {	
+_build_profile() {
 	[ "$config_profile_path" ] && _validate_profile
 
 	if [ "$config_profile_symlink" = "true" ]

@@ -3,4 +3,4 @@
 # Runs drush in the build path
 set -e
 
-drush --root=$drop_docroot "$@"
+$drush --root=$drop_docroot "$@"

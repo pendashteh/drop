@@ -75,19 +75,19 @@ main() {
 
 _enable_modules() {
 	if  [ "$config_install_enable_modules" ]; then
-		debug drush --root=$drop_docroot en $config_install_enable_modules $force_yes
+		debug $drush --root=$drop_docroot en $config_install_enable_modules $force_yes
 	fi
 }
 _check_database_connection() {
 	local __db_url=$1
 	# @FIXME this method will not detect wrong port and will pass anyways.
-	mysql_command=$(drush --root=$drop_docroot sql-connect --db-url=$__db_url)
+	mysql_command=$($drush --root=$drop_docroot sql-connect --db-url=$__db_url)
 	error="$($mysql_command -e ';')"
 }
 
 enable_profile() {
-	debug drush --root=$drop_docroot vset --exact -y install_profile $1
-	debug drush --root=$drop_docroot en $1 $force_yes
+	debug $drush --root=$drop_docroot vset --exact -y install_profile $1
+	debug $drush --root=$drop_docroot en $1 $force_yes
 }
 
 _generate_settings_php() {
@@ -125,7 +125,7 @@ _generate_settings_php() {
 	fi
 
 	_install_settingsphp_check
-	debug drush --root=$drop_docroot settingsphp-generate --db-url=$__db_url --db-prefix="kids_drupal_" $force_yes
+	debug $drush --root=$drop_docroot settingsphp-generate --db-url=$__db_url --db-prefix="kids_drupal_" $force_yes
 
 	if [ "$_preserve_original_settingsphp" = "true" ]
 		then
@@ -136,25 +136,25 @@ _generate_settings_php() {
 }
 
 _install_settingsphp_check() {
-	settingsphp_check_command="drush settingsphp-generate --help"
+	settingsphp_check_command="$drush settingsphp-generate --help"
 	if [ ! "$($settingsphp_check_command 2>/dev/null)" ]
 		then
 		echo "Installing settingsphp.module..."
-		drush dl settingsphp -y
-		drush cc drush -y
+		$drush dl settingsphp -y
+		$drush cc drush -y
 	fi
 }
 
 _install_profile() {
 	local __profile=$1
-	debug drush --root=$drop_docroot si $__profile $force_yes
+	debug $drush --root=$drop_docroot si $__profile $force_yes
 }
 
 _import_db() {
 	local __db_dump=$1
 	echo "making sure the current database is empty"
-	debug drush --root=$drop_docroot sql-drop $force_yes
-	debug drush --root=$drop_docroot sql-cli < $__db_dump
+	debug $drush --root=$drop_docroot sql-drop $force_yes
+	debug $drush --root=$drop_docroot sql-cli < $__db_dump
 	echo "Rebuilding registry..."
 	php $script_root/scripts/rr.php --root=$drop_docroot 1>/dev/null
 }

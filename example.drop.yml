@@ -8,6 +8,8 @@
 # If specified, will be loaded before this config
 base: base.yml
 
+drush:
+  alias: "drush"
 drupal:
 	url: http://localhost/
 	docroot: _build
