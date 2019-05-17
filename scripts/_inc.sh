@@ -5,7 +5,11 @@
 
 drop_read_config () {
 
-	[ "$config_path" = "--" ] && config_path="./config.yml"
+	[ "$config_path" = "--" ] && config_path="./drop.yml"
+
+	# Initialise config file
+	[ "$task" = "init" ] && cp $script_root/example.drop.yml $config_path
+
 	root=$(_get_dir_path $config_path)
 	config_path=$(_get_abs_path $config_path)
 
