@@ -8,6 +8,8 @@
 # If specified, will be loaded before this config
 base: base.yml
 
+php:
+  alias: "php"
 drush:
   alias: "drush"
 drupal:

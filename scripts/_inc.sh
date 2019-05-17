@@ -18,6 +18,7 @@ drop_read_config () {
 
 	cd $root
 
+	config_php_alias="php"
 	config_drush_alias="drush"
 	config_drupal_docroot=$root/_build
 	config_profile_path=$root/profile
@@ -44,10 +45,11 @@ drop_read_config () {
 	config_build_sitesdir=$(_get_abs_path $config_build_sitesdir)
 	config_build_source=$(_get_abs_path $config_build_source)
 	config_install_post_script=$(_get_abs_path $config_install_post_script)
-
+	config_drupal_docroot=$(_get_abs_path $config_drupal_docroot)
 
 	drop_docroot=$config_drupal_docroot
 	drush=$config_drush_alias
+	php=$config_php_alias
 }
 
 _load_config_file() {
