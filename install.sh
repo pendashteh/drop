@@ -84,7 +84,6 @@ main() {
 
 _install_theme() {
 	if  [ "$config_install_theme" ]; then
-		debug $drush --root=$drop_docroot dl $config_install_theme $force_yes
 		debug $drush --root=$drop_docroot en $config_install_theme $force_yes
 		debug $drush --root=$drop_docroot vset theme_default $config_install_theme $force_yes
 	fi
