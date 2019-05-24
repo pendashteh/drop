@@ -1,5 +1,5 @@
 # You could use this file as a template for *.drop.yml config files
-# 
+#
 # For paths, you could use '~' or $HOME
 # Also the following variables are available to be used
 # - $root: points to the directory containing this config file.
@@ -52,3 +52,4 @@ build:
 
 deploy:
 	docroot: makefile
+  profile: copy
