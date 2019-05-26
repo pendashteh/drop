@@ -60,17 +60,16 @@ _build_codebase() {
 }
 _build_profile() {
 	[ "$config_profile_path" ] && _validate_profile
-
-	if [ "$config_deploy_profile" = "symlink" ]
+	if [ "$config_build_profile_type" = "symlink" ]
 	  then
-	  echo "Creating a symlink to profile at $config_profile_path"
+	  echo "Creating a symlink to profile at $config_build_profile_path"
 	  debug rm -rf $drop_docroot/profiles/$config_profile_name
-	  debug ln -nfs $config_profile_path $drop_docroot/profiles/$config_profile_name
-	elif [ "$config_deploy_profile" = "copy" ]
+	  debug ln -nfs $config_build_profile_path $drop_docroot/profiles/$config_profile_name
+	elif [ "$config_build_profile_type" = "copy" ]
 		  then
-		  echo "Copying the profile from $config_profile_path as profiles/$config_profile_name"
+		  echo "Copying the profile from $config_build_profile_path as profiles/$config_profile_name"
 		  debug rm -rf $drop_docroot/profiles/$config_profile_name
-		  debug cp -r $config_profile_path $drop_docroot/profiles/$config_profile_name
+		  debug cp -r $config_build_profile_path $drop_docroot/profiles/$config_profile_name
 	fi
 	return 0
 }

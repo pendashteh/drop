@@ -25,10 +25,6 @@ profile:
   name: profile_name
   # if specified will be installed first and $config_profile_name will be installed on top of it. defaults to empty
   base: standard
-  # path to the directory containing {profile_name}.info
-  path: /path/to/profile/file
-  # If set to true, it will make the profile drupal-org.make file into sites/all and create a symlink to the installation profile
-  symlink: false
 
 install:
   theme: bootsrtap
@@ -53,6 +49,10 @@ build:
   sitesdir: sites
   # path to makefile to be used by drush.
   makefile: stub.make
+  profile:
+    type: ssymlink
+    # path to the directory containing {profile_name}.info
+    path: /path/to/profile
   docroot:
     type: git
     url: https://github.com/drupal/drupal.git

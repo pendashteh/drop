@@ -127,9 +127,9 @@ _load_config_file() {
 }
 _validate_profile() {
 	# Finalize config variables
-	if [ ! -e "$config_profile_path/$config_profile_name.info" ]
+	if [ ! -e "$config_build_profile_path/$config_profile_name.info" ]
 		then
-		echo "Profile $config_profile_name not found at $config_profile_path"
+		echo "Profile $config_profile_name not found at $config_build_profile_path"
 		exit 1
 	fi
 }
