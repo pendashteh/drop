@@ -36,50 +36,50 @@ main() {
 		then
 		if [[ ! -e $config_install_db_dump ]]
 			then
-			echo "DB dump could not be found at $config_install_db_dump"
+			drop_info "DB dump could not be found at $config_install_db_dump"
 			exit 1
 		fi
 		_import_db $config_install_db_dump
 		if [ "$config_profile_name" ]
 			then
-			echo "Re-installing "$config_profile_name" on top of DB dump."
+			drop_info "Re-installing "$config_profile_name" on top of DB dump."
 			enable_profile $config_profile_name
 		fi
 	else
 		if [ ! "$config_profile_name" ]
 			then
-			echo "Installing default profile ($config_defaults_profile_name)"
+			drop_info "Installing default profile ($config_defaults_profile_name)"
 			_install_profile $config_defaults_profile_name
 		elif [ ! "$config_profile_base" ] || [ "$config_profile_base" = "$config_profile_name" ]
 			then
-			echo "Installing $config_profile_name profile"
+			drop_info "Installing $config_profile_name profile"
 			_install_profile $config_profile_name
 		else
-			echo "Installing $config_profile_name on top of $config_profile_base"
+			drop_info "Installing $config_profile_name on top of $config_profile_base"
 			_install_profile $config_profile_base
 			enable_profile $config_profile_name
 		fi
 	fi
 
-	echo "Install the theme if specified"
+	drop_info "Install the theme if specified"
 	_install_theme
 
-	echo "Enable modules if any specified"
+	drop_info "Enable modules if any specified"
 	_enable_modules
 
-	echo "Disable modules if any specified"
+	drop_info "Disable modules if any specified"
 	_disable_modules
 
-	echo "Running the post install script, if provided"
+	drop_info "Running the post install script, if provided"
 	_post_install_script
 
-	echo "Running update process..."
+	drop_info "Running update process..."
 	drop_run_task update $force_yes
 
-	echo "Creating a one-time login..."
+	drop_info "Creating a one-time login..."
 	drop_run_task drushuli
 
-	echo "Finished successfully."
+	drop_info "Finished successfully."
 }
 
 _install_theme() {
@@ -123,7 +123,7 @@ enable_profile() {
 _generate_settings_php() {
 	if [ ! "$config_install_settingsphp_generate" = "true" ]
 		then
-		echo "Using the existing settings.php."
+		drop_info "Using the existing settings.php."
 		return
 	fi
 
@@ -143,7 +143,7 @@ _generate_settings_php() {
 		then
 		if [ ! -e $sites_default_path/$_default_settingsphp_name ]
 			then
-			echo "No settings.php found or configured to be generated."
+			drop_error "No settings.php found or configured to be generated."
 			exit 1
 		fi
 		_preserve_original_settingsphp="true"
@@ -169,7 +169,7 @@ _install_settingsphp_check() {
 	settingsphp_check_command="$drush settingsphp-generate --help"
 	if [ ! "$($settingsphp_check_command 2>/dev/null)" ]
 		then
-		echo "Installing settingsphp.module..."
+		drop_info "Installing settingsphp.module..."
 		$drush dl settingsphp -y
 		$drush cc drush -y
 	fi
@@ -184,6 +184,7 @@ _import_db() {
 	local __db_dump=$1
 	drop_info "making sure the current database is empty"
 	debug $drush --root=$drop_docroot sql-drop $force_yes
+	drop_info "Importing DB Dump from $__db_dump"
 	debug $drush --root=$drop_docroot sql-cli < $__db_dump
 	drop_info "Rebuilding registry..."
 	. $script_root/lib/registry_rebuild.inc.sh
