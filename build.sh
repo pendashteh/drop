@@ -52,24 +52,33 @@ _build_codebase() {
 		echo "Building docroot at $drop_docroot by cloning $config_build_docroot_url"
 		_purge_build_path
 		$git clone $(_get_abs_path $config_build_docroot_url) $drop_docroot
-		[ -z "$config_build_docroot_branch" ] && $git --work=tree=$drop_docroot --git-dir=$drop_docroot checkout -f $config_build_docroot_branch
+		[ -z "$config_build_docroot_branch" ] && $git --work-tree=$drop_docroot --git-dir=$drop_docroot/.git checkout -f $config_build_docroot_branch
 	else
 		echo "No source is provided to build the codebase."
 	fi
 	return 0
 }
 _build_profile() {
-	[ "$config_profile_path" ] && _validate_profile
+	_profile_path=$drop_docroot/profiles/$config_profile_name
 	if [ "$config_build_profile_type" = "symlink" ]
 	  then
+		_validate_profile
 	  echo "Creating a symlink to profile at $config_build_profile_path"
 	  debug rm -rf $drop_docroot/profiles/$config_profile_name
 	  debug ln -nfs $config_build_profile_path $drop_docroot/profiles/$config_profile_name
+	elif [ "$config_build_profile_type" = "git" ]; then
+		_git_url=$config_build_profile_url
+		[ ! -z "$config_build_profile_branch" ] && _git_branch=$config_build_profile_branch
+		_git_dir=$drop_docroot/profiles/$config_profile_name
+		echo "Building docroot at $_git_dir by cloning $_git_url"
+		$git clone $_git_url $_git_dir
+		[ ! -z "$_git_branch" ] && $git --work-tree=$_git_dir --git-dir=$_git_dir/.git checkout -f $_git_branch
 	elif [ "$config_build_profile_type" = "copy" ]
-		  then
-		  echo "Copying the profile from $config_build_profile_path as profiles/$config_profile_name"
-		  debug rm -rf $drop_docroot/profiles/$config_profile_name
-		  debug cp -r $config_build_profile_path $drop_docroot/profiles/$config_profile_name
+	  then
+		_validate_profile
+		echo "Copying the profile from $config_build_profile_path as profiles/$config_profile_name"
+		debug rm -rf $drop_docroot/profiles/$config_profile_name
+		debug cp -r $config_build_profile_path $drop_docroot/profiles/$config_profile_name
 	fi
 	return 0
 }

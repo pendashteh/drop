@@ -23,10 +23,7 @@ main() {
 	# Needs to be moved when 'defaults' feature has been implemented
 	config_defaults_profile_name="standard"
 
-	if [ "$config_profile_name" ]
-		then
-		_validate_profile
-	fi
+	# @FIXME validate profile if provided
 
 	_check_database_connection $config_drupal_db_url
 
