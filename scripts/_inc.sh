@@ -26,10 +26,11 @@ drop_config_init () {
 
 		drop_read_config $_config_path
 
+		drop_config_set_variables
+
   fi
 
 
-	drop_config_set_variables
 
 }
 
@@ -39,6 +40,10 @@ drop_config_set_defaults () {
 	config_profile_name="" # Mandatory
 	config_php_alias="php"
 	config_drush_alias="drush"
+
+	config_git_alias="git"
+	config_git_path="git"
+
 	config_drupal_docroot="_build"
 	config_drupal_url=""
 }
@@ -46,9 +51,11 @@ drop_config_set_defaults () {
 # Variables to be used across drop scripts.
 # Calculated after config is processed
 drop_config_set_variables() {
+	# FIXME alias is treated as path. needs to be fixed.
 	drop_docroot=$config_drupal_docroot
 	drush=$config_drush_alias
 	php=$config_php_alias
+	git=$config_git_path
 }
 
 drop_config_set_docroot () {
@@ -63,14 +70,12 @@ drop_read_config () {
 	# Initialise config file
 	[ "$task" = "init" ] && cp $script_root/example.drop.yml $_config_path
 
-	root=$(_get_dir_path $_config_path)
 	# Make sure the file exists
 	_config_path=$(_get_abs_path $_config_path)
 	[ ! -e "$_config_path" ] && echo "Config file could not be found at $config_path. To create one please @see example.config.yml" && exit 1
 
 
-
-	cd $root
+	cd $drop_root
 
 	config_profile_path=$drop_root/profile
 	config_profile_makefile="stub.make"
@@ -91,7 +96,8 @@ drop_read_config () {
 	config_build_sitesdir=$(_get_abs_path $config_build_sitesdir)
 	config_build_source=$(_get_abs_path $config_build_source)
 	config_install_post_script=$(_get_abs_path $config_install_post_script)
-	config_drupal_docroot=$(_get_abs_path $config_drupal_docroot)
+
+	[ ! -z "$config_git_path" ] && alias git="$config_git_alias"
 
 }
 

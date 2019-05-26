@@ -31,6 +31,6 @@ task=$2
 [ ! "$task" ] && echo "No task provided." && exit 1
 
 . $script_root/scripts/_inc.sh;
-drop_read_config $config_path
+drop_config_init $config_path
 
 drop_run_task $task "${@:3}"

@@ -30,24 +30,29 @@ _prepare_build_path() {
 	return 0
 }
 _build_codebase() {
-	if [ "$config_makefile_path" ]
+	if [ "$config_build_makefile" ]
 		then
 		_validate_makefile
-		echo "Using the makefile $config_makefile_path"
+		echo "Using the makefile $config_build_makefile"
 		_purge_build_path
 		# Check if the profile needs to be symlink
 		if [ "$config_profile_symlink" = "true" ]; then
 			_validate_profile
 			# First get only core and skip the profile
-			debug $drush make $config_makefile_path $drop_docroot --no-recursion
+			debug $drush make $config_build_makefile $drop_docroot --no-recursion
 			# Then make all the profile dependencies into sites/all
 			local _profile_makefile_path="$config_profile_path/drupal-org.make"
 			if [ -e "$_profile_makefile_path" ]; then
 				debug $drush make $_profile_makefile_path $drop_docroot --no-core --contrib-destination="sites/all"
 			fi
 		else
-			debug $drush make $config_makefile_path $drop_docroot
+			debug $drush make $config_build_makefile $drop_docroot
 		fi
+	elif [ "$config_build_docroot_type" = "git" ]; then
+		echo "Building docroot at $drop_docroot by cloning $config_build_docroot_url"
+		_purge_build_path
+		$git clone $(_get_abs_path $config_build_docroot_url) $drop_docroot
+		[ -z "$config_build_docroot_branch" ] && $git --work=tree=$drop_docroot --git-dir=$drop_docroot checkout -f $config_build_docroot_branch
 	else
 		echo "No source is provided to build the codebase."
 	fi

@@ -8,6 +8,9 @@
 # If specified, will be loaded before this config
 base: base.yml
 
+git:
+  alias: "git"
+  path: "/path/tp/new/git"
 php:
   alias: "php"
 drush:
@@ -45,13 +48,15 @@ install:
   # A list of modules to disable after a successfull install
   disable_modules: "speace separated list of modules"
 
-makefile:
-  # path to makefile to be used by drush.
-  path: stub.make
-
 build:
   # The content of this directory will be synced with sites/ folder in docroot
   sitesdir: sites
+  # path to makefile to be used by drush.
+  makefile: stub.make
+  docroot:
+    type: git
+    url: https://github.com/drupal/drupal.git
+    branch: 7.x
 
 deploy:
   docroot: makefile
