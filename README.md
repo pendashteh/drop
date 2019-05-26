@@ -5,6 +5,8 @@
 	$ drop -- build
 	$ drop mytestenv.yml install
 	$ drop live.yml script scripts/sync-content.sh
+	$ drop ./docroot fix-missing-modules
+	$ drop ../v2/docroot drush cc all
 ```
 
 # Available commands

@@ -3,35 +3,82 @@
 
 [ "$DEBUG" = "true" ] && debug_mode=true
 
-drop_read_config () {
+DROP_TYPE_DOCROOT="docroot"
 
-	[ "$config_path" = "--" ] && config_path="./drop.yml"
+DROP_TYPE_CONFIGFILE="configfile"
 
-	# Initialise config file
-	[ "$task" = "init" ] && cp $script_root/example.drop.yml $config_path
+drop_config_init () {
+	local _config_path=$1
 
-	root=$(_get_dir_path $config_path)
-	config_path=$(_get_abs_path $config_path)
+	drop_config_set_defaults
 
+	if [ -d $_config_path ]; then
+
+		drop_type=DROP_TYPE_DOCROOT
+		drop_root=$(_get_abs_path $_config_path)
+		config_drupal_docroot=$drop_root
+
+  else
+
+		drop_type=DROP_TYPE_CONFIGFILE
+		[ "$_config_path" = "--" ] && _config_path="./drop.yml"
+		drop_root=$(_get_dir_path $_config_path)
+
+		drop_read_config $_config_path
+
+  fi
+
+
+	drop_config_set_variables
+
+}
+
+# Config defaults set before is processed
+drop_config_set_defaults () {
 	# Set default configs and variables
 	config_profile_name="" # Mandatory
+	config_php_alias="php"
+	config_drush_alias="drush"
+	config_drupal_docroot="_build"
+	config_drupal_url=""
+}
+
+# Variables to be used across drop scripts.
+# Calculated after config is processed
+drop_config_set_variables() {
+	drop_docroot=$config_drupal_docroot
+	drush=$config_drush_alias
+	php=$config_php_alias
+}
+
+drop_config_set_docroot () {
+	local docroot=$1
+	config_drupal_docroot=$docroot
+	drop_docroot=$config_drupal_docroot
+}
+
+drop_read_config () {
+	local _config_path=$1
+
+	# Initialise config file
+	[ "$task" = "init" ] && cp $script_root/example.drop.yml $_config_path
+
+	root=$(_get_dir_path $_config_path)
+	# Make sure the file exists
+	_config_path=$(_get_abs_path $_config_path)
+	[ ! -e "$_config_path" ] && echo "Config file could not be found at $config_path. To create one please @see example.config.yml" && exit 1
+
+
 
 	cd $root
 
-	config_php_alias="php"
-	config_drush_alias="drush"
-	config_drupal_docroot=$root/_build
-	config_profile_path=$root/profile
+	config_profile_path=$drop_root/profile
 	config_profile_makefile="stub.make"
 	config_install_features_revert_all=false
 	config_install_rebuild_permissions=true
 	config_install_print_uli=false
 	config_build_symlink_to_profile=false
 	config_install_settingsphp_generate=true
-
-	[ "$task" = "init" ] && return
-
-	[ ! -e "$config_path" ] && echo "Config file could not be found at $config_path. To create one please @see example.config.yml" && exit 1
 
 	# Read local config variables
 	_load_config_file $config_path
@@ -41,15 +88,11 @@ drop_read_config () {
 	[[ $config_build_files ]] && [[ ! -d $config_build_files ]] && echo "Could not locate specified files directory at"$config_build_files && exit 1
 	[ "$config_install_post_script" ] && [[ ! -s $config_install_post_script ]] && echo "Could not locate post-install script at "$config_install_post_script && exit 1
 
-	config_profile_path=$(_get_abs_path $config_profile_path)
 	config_build_sitesdir=$(_get_abs_path $config_build_sitesdir)
 	config_build_source=$(_get_abs_path $config_build_source)
 	config_install_post_script=$(_get_abs_path $config_install_post_script)
 	config_drupal_docroot=$(_get_abs_path $config_drupal_docroot)
 
-	drop_docroot=$config_drupal_docroot
-	drush=$config_drush_alias
-	php=$config_php_alias
 }
 
 _load_config_file() {
