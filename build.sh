@@ -17,11 +17,14 @@ main() {
 	_build_files
 }
 _purge_build_path() {
+	drop_info "Purging build path"
 	if [ -L "$drop_docroot" ] || [ -d "$drop_docroot" ]
 		then
+		drop_info "Applying force"
 		chmod -R u+w $drop_docroot
 		rm -rf $drop_docroot
 	fi
+	drop_info "Done"
 }
 _prepare_build_path() {
 	mkdir -p $drop_docroot
@@ -49,15 +52,29 @@ _build_codebase() {
 			debug $drush make $config_build_makefile $drop_docroot
 		fi
 	elif [ "$config_build_docroot_type" = "git" ]; then
-		echo "Building docroot at $drop_docroot by cloning $config_build_docroot_url"
+		echo "Building docroot at '$drop_docroot' by cloning '$config_build_docroot_url'"
 		_purge_build_path
-		$git clone $(_get_abs_path $config_build_docroot_url) $drop_docroot
-		[ -z "$config_build_docroot_branch" ] && $git --work-tree=$drop_docroot --git-dir=$drop_docroot/.git checkout -f $config_build_docroot_branch
+		git_url=$config_build_docroot_url
+		git_destination=$drop_docroot
+		git_branch=$config_build_docroot_branch
+		_git_deploy $git_url $git_destination $git_branch
 	else
 		echo "No source is provided to build the codebase."
 	fi
 	return 0
 }
+
+_git_deploy () {
+	local __git_url=$1
+	local __git_destination=$2
+	local __git_branch_arg="" && [ ! -z "$3" ] && __git_branch_arg="-b $3"
+	local __git_clone_args="--depth 1" && [ ! -z "$4" ] && local __git_clone_args=$4
+
+	$git clone $__git_clone_args $__git_branch_arg $__git_url $__git_destination
+
+	return 0
+}
+
 _build_profile() {
 	_profile_path=$drop_docroot/profiles/$config_profile_name
 	if [ "$config_build_profile_type" = "symlink" ]
