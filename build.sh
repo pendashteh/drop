@@ -64,6 +64,23 @@ _build_codebase() {
 	return 0
 }
 
+_zip_build () {
+	local __zip_url=$1
+	local __zip_destination=$2
+	local __zip_driname=$3
+	local __zip_args="-xzf" && [ ! -z "$4" ] && __zip_args=$4
+
+	cd $drop_root
+	mkdir -p __tmp && cd __tmp
+	curl -o dl.tar.gz $__zip_url
+	tar $__zip_args dl.tar.gz
+	cd ..
+	mv __tmp/$__zip_driname $__zip_destination
+	rm -rf __tmp
+
+	return 0
+}
+
 _git_deploy () {
 	local __git_url=$1
 	local __git_destination=$2
@@ -87,9 +104,15 @@ _build_profile() {
 		_git_url=$config_build_profile_url
 		[ ! -z "$config_build_profile_branch" ] && _git_branch=$config_build_profile_branch
 		_git_dir=$drop_docroot/profiles/$config_profile_name
-		echo "Building docroot at $_git_dir by cloning $_git_url"
+		echo "Building profile at $_git_dir by cloning $_git_url"
 		$git clone $_git_url $_git_dir
 		[ ! -z "$_git_branch" ] && $git --work-tree=$_git_dir --git-dir=$_git_dir/.git checkout -f $_git_branch
+	elif [ "$config_build_profile_type" = "zip" ]; then
+		zip_destination=$drop_docroot/profiles/$config_profile_name
+		echo "Building profile at '$zip_destination' by unzipping '$config_build_profile_url'"
+		zip_url=$config_build_profile_url
+		zip_driname=$config_build_profile_dirname
+		_zip_build $zip_url $zip_destination $zip_driname
 	elif [ "$config_build_profile_type" = "copy" ]
 	  then
 		_validate_profile
