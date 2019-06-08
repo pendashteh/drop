@@ -11,6 +11,7 @@
 
 # Available commands
 `fix-missing-modules` Fixes the missing module error message. [https://www.drupal.org/project/module_missing_message_fixer]
+`db-sql [--no-db] SQL` Runs an SQL Query against database. You can choose to omit the database autoselection.
 
 TODO
 - get database as a prefix when installing

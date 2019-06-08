@@ -31,6 +31,7 @@ task=$2
 [ ! "$task" ] && echo "No task provided." && exit 1
 
 . $script_root/lib/common.inc.sh;
+. $script_root/lib/db.inc.sh;
 . $script_root/scripts/_inc.sh;
 
 drop_config_init $config_path
