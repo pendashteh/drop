@@ -27,6 +27,10 @@ profile:
   base: standard
 
 install:
+  db:
+    dump: /path/to/dump.sql
+    # Attempt to create the DATABASE if not exists
+    create: false
   theme: bootsrtap
   # will revert all features on site update
   features_revert_all: false

@@ -25,7 +25,7 @@ main() {
 
 	# @FIXME validate profile if provided
 
-	_check_database_connection $config_drupal_db_url
+	_check_database_connection $config_drupal_db_url $config_install_db_create
 
 	_generate_settings_php $config_drupal_db_url
 
@@ -107,9 +107,21 @@ _post_install_script() {
 
 _check_database_connection() {
 	local __db_url=$1
-	# @FIXME this method will not detect wrong port and will pass anyways.
-	mysql_command=$($drush --root=$drop_docroot sql-connect --db-url=$__db_url)
-	error="$($mysql_command -e ';')"
+	local __create_db=false && [ ! -z "$2" ] && __create_db=$2
+
+	if [ "$__create_db" == false ]; then
+		_db_command=$(db_command $__db_url)
+		echo ";" | $_db_command
+	else
+		_db_command=$(db_command $__db_url true)
+		_db_name=$(basename $__db_url)
+		drop_info "Looking for the database $_db_name"
+		_db_exists=false && echo "show databases;" | $_db_command | grep -w $_db_name && _db_exists=true
+		if [ "$_db_exists" == "false" ]; then
+			drop_info "Creating database $_db_name"
+			echo "CREATE DATABASE $_db_name;" | $_db_command
+		fi
+	fi
 }
 
 enable_profile() {
