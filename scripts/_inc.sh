@@ -110,7 +110,7 @@ _load_config_file() {
 	# If there is a base config we need to reload them both again
 	if [ "$_load_config__load_base_disallowed" != "true" ] && [ "$config_base" ]
 		then
-		_config_base_path=$root/$config_base
+		_config_base_path=$drop_root/$config_base
 		if [ ! -e "$_config_base_path" ]
 			then
 			echo "Base config file could not be faound at $_config_base_path (defined at $_config_path)"
